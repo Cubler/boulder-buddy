@@ -6,6 +6,7 @@
 
 	<!-- Dependencies -->
 	<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+	<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
 	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans|Raleway'>
 	<link rel='stylesheet' href='styles/font-awesome/css/font-awesome.css'>
 
@@ -13,6 +14,8 @@
 	<script src='scripts/loader.js'></script>
 	<script src='scripts/nav.js'></script>
 	<script src='scripts/uuid.js'></script>
+	<script src="scripts/addRoute.js"></script>
+	<script src="scripts/database.js"></script>
 	<link rel='stylesheet' href='style.css'>
 
 	<!-- Mobile viewport -->
@@ -84,7 +87,34 @@
 
 		<!-- Create route view -->
 		<div class='page' id='create-route'>
-			<div>David, you can add your HTML here!</div>
+			<div id="photo">
+				<canvas id="canvas" width='300' height='500'></canvas>
+			</div>
+			<div id="chooseWindow">
+				<div id="smallBut">Add Small</div>
+				<div id="medBut">Add Medium</div>
+				<div id="largeBut">Add Large</div>
+			</div>
+			<div id ="selectWindow">
+				<button id="delBut" type="button" >Delete</button><br>
+				<button id="startBut" type="button" >Toggle Start</button><br>
+			</div>
+			<div>
+				<button id="saveBut" type="button">Save</button>
+			</div>
+			<div id="saveForm">
+				<form >
+				Route Name: <input type="text" id ="routeName" value="Route Name">
+				<br>
+				Setter Name: <input type="text" id="setter" value="Your Name">
+				<br>
+				Grade: <input type="number" id="grade" min="0" max="8" value="0">
+				<br>
+				Description: <textarea id="description" rows="4" cols="50"></textarea>
+				<br>
+				<button id="submitBut" type="button">Submit</button>
+				</form>
+			</div>
 		</div>
 
 		<!-- Routes view -->

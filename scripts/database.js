@@ -1,3 +1,14 @@
+var config={
+        apiKey: "AIzaSyBXR2PjRDWNEEVJVqFSx7Fv3BglHNCrdEg",
+        authDomain: "bbtoy-c79a2.firebaseapp.com",
+        databaseURL: "https://bbtoy-c79a2.firebaseio.com",
+        projectId: "bbtoy-c79a2",
+        storageBucket: "bbtoy-c79a2.appspot.com",
+        messagingSenderId: "390406483758"
+    };
+
+firebase.initializeApp(config);
+
 let DATABASE = {
 
     db: firebase.database(),
