@@ -19,9 +19,7 @@ $(document).ready(function (){
     var larBut = document.getElementById("largeBut");
     var delBut = document.getElementById("delBut");
     var startBut = document.getElementById("startBut");
-    // No submitbut test*
-    // var submitBut = document.getElementById("submitBut");
-
+    
     // drag related variables
     var dragok = false;
     var startX;
@@ -60,11 +58,6 @@ $(document).ready(function (){
     startBut.addEventListener("click" , function (e){
         makeStartHold();
     });
-    //NO submit button test*
-    // submitBut.addEventListener("click" , function (e){
-    //     DATABASE.save();
-    //     NAV.transition('#menu');
-    // });
     canvas.addEventListener('dblclick', function (e){
 
         clickedX = getMouseX(e);
@@ -259,3 +252,9 @@ $(document).ready(function (){
         return false;
     }
 });
+
+let ADDROUTE = {
+    clear: function(){
+        ctx
+    }
+}

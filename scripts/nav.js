@@ -201,6 +201,7 @@ let NAV = {
 			icons.push('fa-plus')
 			actions.push(() => {
 				// Go to creation view
+				// clear**
 				NAV.transition('#create-route');
 			});
 		} else if (selector == '#routes') {
