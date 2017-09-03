@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Boulder Buddy</title>
+
+	<!-- Dependencies -->
+	<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans|Raleway'>
+	<link rel='stylesheet' href='styles/font-awesome/css/font-awesome.css'>
+
+	<!-- Sources -->
+	<script src='scripts/loader.js'></script>
+	<script src='scripts/nav.js'></script>
+	<script src='scripts/uuid.js'></script>
+	<link rel='stylesheet' href='style.css'>
+
+	<!-- Mobile viewport -->
+	<meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+
+<body ontouchstart=''>
+	<!-- Facebook API requires SDK to load in body -->
+	<script src='scripts/login.js'></script>
+
+	<!-- Navbar -->
+	<div id='navbar'>
+		<!-- Back button -->
+		<div id='nav-back' class='action disabled'>
+			<i class="fa fa-chevron-left" aria-hidden="true"></i>
+		</div>
+
+		<!-- Empty (never used; only for spacing) -->
+		<div class='action disabled'>
+			<i class="fa fa-chevron-left" aria-hidden="true"></i>
+		</div>
+
+		<!-- Title -->
+		<span id='nav-title'>Boulder Buddy</span>
+
+		<!-- Action 2 -->
+		<div id='nav-action-2' class='action disabled'>
+			<i class="fa fa-plus" aria-hidden="true"></i>
+		</div>
+
+		<!-- Action 1 -->
+		<div id='nav-action-1' class='action disabled'>
+			<i class="fa fa-plus" aria-hidden="true"></i>
+		</div>
+	</div>
+
+	<!-- Content (pages) -->
+	<div id='content'>
+		<!-- Loading -->
+		<div class='page' id='loading'>
+			<i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+		</div>
+
+		<!-- Login -->
+		<div class='page' id='login'>
+			<img src='assets/logo.png'>
+			<div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false" onlogin="LOGIN.verify()"></div>
+		</div>
+
+		<!-- Main menu -->
+		<div class='page' id='menu'>
+			<div id='all-routes' class='menu-button'>
+				<i class="fa fa-globe" aria-hidden="true"></i>
+				<span>All Routes</span>
+			</div>
+			<div id='favorite-routes' class='menu-button'>
+				<i class="fa fa-heart" aria-hidden="true"></i>
+				<span>Favorites</span>
+			</div>
+			<div id='my-routes' class='menu-button'>
+				<i class="fa fa-user" aria-hidden="true"></i>
+				<span>My Routes</span>
+			</div>
+			<div id='random-route' class='menu-button'>
+				<i class="fa fa-random" aria-hidden="true"></i>
+				<span>Random Route</span>
+			</div>
+		</div>
+
+		<!-- Routes view -->
+		<div class='page' id='routes'>
+			<!-- Filter bubbles -->
+			<div id='filter'>
+				<div class='grade'>V0</div>
+				<div class='grade'>V1</div>
+				<div class='grade'>V2</div>
+				<div class='grade'>V3</div>
+				<div class='grade'>V4</div>
+				<div class='grade'>V5</div>
+				<div class='grade'>V6</div>
+				<div class='grade'>V7</div>
+			</div>
+
+			<!-- List of routes -->
+			<div id='route-list'></div>
+		</div>
+
+		<!-- Search view -->
+		<div class='page' id='search'>
+			<i class='fa fa-search'></i>
+			<input>
+			<button onclick='NAV.search()'>Search</button>
+		</div>
+
+		</div>
+
+		<!-- Specific route view -->
+		<div class='page' id='route'></div>
+	</div>
+</body>
+
+</html>

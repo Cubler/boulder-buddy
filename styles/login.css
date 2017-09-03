@@ -1,0 +1,15 @@
+#login {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+#login img {
+	width: 70%;
+	padding: 3rem 0;
+}
+
+.fb-login-button:active {
+	opacity: 0.7;
+}

@@ -1,0 +1,11 @@
+/* Use this file to import other styles */
+
+@import "styles/content.css";
+@import "styles/filter.css";
+@import "styles/loading.css";
+@import "styles/login.css";
+@import "styles/main.css";
+@import "styles/menu.css";
+@import "styles/navbar.css";
+@import "styles/routes.css";
+@import "styles/search.css";
