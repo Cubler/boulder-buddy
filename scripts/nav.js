@@ -197,6 +197,7 @@ let NAV = {
 			icons.push('fa-plus')
 			actions.push(() => {
 				// Go to creation view
+				NAV.transition('#create-route');
 			});
 		} else if (selector == '#routes') {
 			icons.push('fa-search');
@@ -204,7 +205,12 @@ let NAV = {
 				// Go to search view
 				NAV.transition('#search');
 			});
-		}
+		} else if (selector == '#create-route') {
+			icons.push('fa-floppy-o');
+			actions.push(() => {
+				alert('You can save the PNG from here, and maybe transition to a new page!');
+			});
+		};
 
 		// Reveal new actions/icons
 		for (let i = 0; i < actions.length; i++) {
