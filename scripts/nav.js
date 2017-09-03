@@ -201,7 +201,8 @@ let NAV = {
 			icons.push('fa-plus')
 			actions.push(() => {
 				// Go to creation view
-				// clear**
+				// clear
+				$('#canvas')[0].getContext('2d').clearRect(0,0,$('#canvas')[0].width,$('#canvas')[0].height);
 				NAV.transition('#create-route');
 			});
 		} else if (selector == '#routes') {
