@@ -20,8 +20,6 @@ var startBut = document.getElementById("startBut");
 var saveBut = document.getElementById("saveBut");
 var loadBut = document.getElementById("loadBut");
 var submitBut = document.getElementById("submitBut");
-var database = firebase.database();
-
 
 // drag related variables
 var dragok = false;
@@ -65,10 +63,10 @@ saveBut.addEventListener("click" , function (e){
     jQuery("#saveForm").css({display: 'block'});
 });
 submitBut.addEventListener("click" , function (e){
-    save();
+    DATABASE.save();
 });
 loadBut.addEventListener("click" , function (e){
-    load();
+    DATABASE.load();
 });
 canvas.addEventListener('dblclick', function (e){
     clickedX = e.clientX-offsetX;
@@ -81,7 +79,6 @@ canvas.addEventListener('dblclick', function (e){
     }
     
 });
-draw();
 
 function makeMarker(x,y,r,c){
     ctx.beginPath();
@@ -189,7 +186,7 @@ function myMove(e) {
 
     }
 }
-
+//Adds a new marker
 function add(x, y, r){
     markers.push({
         x: x,
@@ -245,32 +242,6 @@ function makeStartHold(){
     draw();
     jQuery("#selectWindow").css({
         display: 'none'});
-}
-
-function save(){
-    var pushed = database.ref('/routes').push();
-    pushed.set({
-        name: jQuery('#routeName').val(),
-        setter: jQuery('#setter').val(),
-        grade: jQuery('#grade').val(),
-        description: jQuery('description').text()
-
-    });
-    database.ref('/routeMaps/'+pushed.getKey()).set({
-        map: canvas.toDataURL()
-    })
-}
-
-function load(){
-    clear();
-    database.ref('/test/map').once('value').then(function(snapshot){
-        var image = new Image();
-        image.onload = function(){
-            ctx.drawImage(image,0,0);
-
-        }
-        image.src = snapshot.val();;
-    });
 }
 
 function detectMarksAt(x,y){
