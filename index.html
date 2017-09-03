@@ -91,30 +91,30 @@
 				<canvas id="canvas" width='300' height='500'></canvas>
 			</div>
 			<div id="chooseWindow">
-				<div id="smallBut">Add Small</div>
-				<div id="medBut">Add Medium</div>
-				<div id="largeBut">Add Large</div>
+				<div id="smallBut"> Small </div>
+				<div id="medBut"> Medium </div>
+				<div id="largeBut"> Large </div>
 			</div>
 			<div id ="selectWindow">
 				<button id="delBut" type="button" >Delete</button><br>
 				<button id="startBut" type="button" >Toggle Start</button><br>
 			</div>
-			<div>
-				<button id="saveBut" type="button">Save</button>
-			</div>
-			<div id="saveForm">
-				<form >
-				Route Name: <input type="text" id ="routeName" value="Route Name">
-				<br>
-				Setter Name: <input type="text" id="setter" value="Your Name">
-				<br>
-				Grade: <input type="number" id="grade" min="0" max="8" value="0">
-				<br>
-				Description: <textarea id="description" rows="4" cols="50"></textarea>
-				<br>
-				<button id="submitBut" type="button">Submit</button>
-				</form>
-			</div>
+		</div>
+
+		<!-- Save-Route Form View -->
+		<div class='page' id='save-route'>
+			<form >
+			Route Name: <input type="text" id ="routeName" placeholder="Route Name">
+			<br>
+			Setter Name: <input type="text" id="setter" placeholder="Your Name">
+			<br>
+			Grade: <input type="number" id="grade" min="0" max="8" placeholder ="0">
+			<br>
+			Description: <textarea id="description" rows="4" cols="50"></textarea>
+			<br>
+			<!-- No button, decided on clicking icon in top left again-->
+			<!-- <button id="submitBut" type="button">Save</button> -->
+			</form>
 		</div>
 
 		<!-- Routes view -->
