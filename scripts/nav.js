@@ -124,9 +124,9 @@ let NAV = {
 		element.css('opacity', 0);
 		NAV.transitioning = true;
 
-		let translation = -100;
+		let translation = 0;
 		if (options.back) {
-			translation = 100;
+			translation = 200;
 			NAV.stack.pop();
 			NAV.stack.pop();
 		}
@@ -149,9 +149,9 @@ let NAV = {
 		let element = $(selector);
 		element.addClass('incoming');
 
-		let translation = 100;
+		let translation = 200;
 		if (options.back) {
-			translation = -100;
+			translation = 0;
 			console.log('nav stack', NAV.stack);
 		}
 
@@ -171,7 +171,7 @@ let NAV = {
 
 	// Bring in new page
 	revealNewPage: (element, selector) => {
-		let transform = 'translateX(0vw)';
+		let transform = 'translateX(100vw)';
 		element.css('transform', transform);
 
 		// Hacky way to make fade-in look smoother
