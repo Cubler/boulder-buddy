@@ -1,0 +1,22 @@
+#photo{
+	background-image: url("wall2.jpg");
+    width: 800px;
+    height: 600px;
+    background-size: 800px 600px;
+	background-repeat: no-repeat;
+}
+#selectWindow{
+	display: none;
+
+}
+#chooseWindow{
+	display: none;
+}
+#saveForm{
+	display: none;
+}
+
+#canvas{border:1px 
+	solid red;
+	stroke-opacity:1.0;
+}
