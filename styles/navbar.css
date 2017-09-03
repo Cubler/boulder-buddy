@@ -15,8 +15,11 @@
 	flex-grow: 0;
 	font-size: 1.2rem;
 	padding: 0 0.5rem;
-	transition: opacity 0.15s ease-out;
 	width: 33px;
+}
+
+#navbar .action:active {
+	opacity: 0.3;
 }
 
 #navbar .action.disabled {

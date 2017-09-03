@@ -17,9 +17,6 @@ let NAV = {
 
 	populateRoutes: (routes) => {
 		let filtered = NAV.filter(routes);
-
-		console.log(filtered);
-
 		NAV.routes = routes;
 
 		let container = $('#route-list');
@@ -152,7 +149,6 @@ let NAV = {
 		let translation = 200;
 		if (options.back) {
 			translation = 0;
-			console.log('nav stack', NAV.stack);
 		}
 
 		let transform = 'translateX(' + translation + 'vw)';

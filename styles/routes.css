@@ -9,6 +9,12 @@
 	display: flex;
 	font-size: 1rem;
 	margin-top: 0.5rem;
+	transition: background-color 0.15s ease-out;
+}
+
+/* Highlight background when a route is selected */
+#route-list .entry:active {
+	background-color: gainsboro;
 }
 
 .grade {
