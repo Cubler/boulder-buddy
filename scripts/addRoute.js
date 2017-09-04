@@ -6,12 +6,13 @@ $(document).ready(function (){
     canvas.style.height='';
     canvas.width=$('#photo')[0].clientWidth;
     canvas.height=$('#photo')[0].clientHeight;
+    var PORTRAITWIDTH = null;
+    var PORTRAITHEIGHT = null;
+    var LANDSCAPEWIDTH = null;
+    var LANDSCAPEHEIGHT = null;
     var BB = canvas.getBoundingClientRect();
     var offsetX = BB.left;
     var offsetY = BB.top;
-    var PORTRAITWIDTH = canvas.clientWidth;
-    var PORTRAITHEIGHT = canvas.clientHeight;
-    // var PORTRAITASPECTRATIO = PORTRAITWIDTH / PORTRAITHEIGHT;
     var sButRadius = 10;
     var mButRadius = 15;
     var lButRadius = 25;
@@ -35,6 +36,16 @@ $(document).ready(function (){
     // an array of objects that define different rectangles
     var markers = [];
 
+    //set up orientation heights and widths
+    var defaultOrientation = window.screen.orientation.type;
+
+    if(defaultOrientation == "portrait-primary" || defaultOrientation== "portrait-secondary"){ 
+        var PORTRAITWIDTH = canvas.clientWidth;
+        var PORTRAITHEIGHT = canvas.clientHeight;
+    }else {
+        var LANDSCAPEWIDTH = canvas.clientWidth;
+        var LANDSCAPEHEIGHT = canvas.clientHeight;    
+    }
 
     // listen for mouse events
     canvas.onmousedown = myDown;
@@ -63,21 +74,8 @@ $(document).ready(function (){
         makeStartHold();
     });
     canvas.addEventListener('dblclick', function (e){
-        var orientation = window.screen.orientation.type;
 
-        scrnclkX = getMouseX(e);
-        scrnclkY = getMouseY(e);
-
-        if(orientation == "portrait-primary" || orientation== "portrait-secondary"){ 
-            canvasclkX = scrnclkX
-            canvasclkY = scrnclkY
-        }else {
-
-            var aspectRatioX = PORTRAITWIDTH / canvas.clientWidth;
-            var aspectRatioY  = PORTRAITHEIGHT / canvas.clientHeight;
-            canvasclkX = scrnclkX * aspectRatioX;
-            canvasclkY = scrnclkY * aspectRatioY;
-        }
+        setClkPositions(e);
 
         //calibration
         if(detectMarksAt(canvasclkX,canvasclkY)){
@@ -123,8 +121,8 @@ $(document).ready(function (){
         e.stopPropagation();
 
         // get the current mouse position
-        var mx = getMouseX(e);
-        var my = getMouseY(e);
+        var mx = scrnclkX;
+        var my = scrnclkY;
 
         // test each rect to see if mouse is inside
         dragok = false;
@@ -252,12 +250,41 @@ $(document).ready(function (){
             display: 'none'});
     }
 
-    function getMouseX(e){
-        return e.pageX;
-    }
+    function setClkPositions(e){
+        scrnclkX = e.pageX;
+        scrnclkY = e.pageY-$('#navbar')[0].clientHeight;
 
-    function getMouseY(e){
-        return e.pageY-$('#navbar')[0].clientHeight;
+        //Orientation depended position for canvas
+        var orientation = window.screen.orientation.type;
+        
+
+        if(orientation == defaultOrientation){ 
+            canvasclkX = scrnclkX
+            canvasclkY = scrnclkY
+        }else {
+            //not default oridentation
+            if(orientation == "portrait-primary" || defaultOrientation == "portrait-secondary"){
+                PORTRAITWIDTH = canvas.clientWidth;
+                PORTRAITHEIGHT = canvas.clientHeight;
+
+                //ratio = DEFAULT / NEW
+                var aspectRatioX = LANDSCAPEWIDTH / PORTRAITWIDTH;
+                var aspectRatioY  = LANDSCAPEHEIGHT / PORTRAITHEIGHT;
+
+                canvasclkX = scrnclkX * aspectRatioX;
+                canvasclkY = scrnclkY * aspectRatioY;
+            }else {
+                LANDSCAPEWIDTH = canvas.clientWidth;
+                LANDSCAPEHEIGHT = canvas.clientHeight;
+
+                var aspectRatioX = PORTRAITWIDTH / LANDSCAPEWIDTH;
+                var aspectRatioY  = PORTRAITHEIGHT / LANDSCAPEHEIGHT;
+
+                canvasclkX = scrnclkX * aspectRatioX;
+                canvasclkY = scrnclkY * aspectRatioY;
+            }
+        }
+
     }
     function detectMarksAt(x,y){
         for (var i = 0; i < markers.length; i++) {
