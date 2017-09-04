@@ -3,18 +3,19 @@ $(document).ready(function (){
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
     canvas.style.width='100%';
-    canvas.style.height='100%';
+    canvas.style.height='';
     canvas.width=$('#photo')[0].clientWidth;
     canvas.height=$('#photo')[0].clientHeight;
     var BB = canvas.getBoundingClientRect();
     var offsetX = BB.left;
     var offsetY = BB.top;
-    var WIDTH = canvas.width;
-    var HEIGHT = canvas.height;
+    var PORTRAITWIDTH = canvas.clientWidth;
+    var PORTRAITHEIGHT = canvas.clientHeight;
+    // var PORTRAITASPECTRATIO = PORTRAITWIDTH / PORTRAITHEIGHT;
     var sButRadius = 10;
     var mButRadius = 15;
     var lButRadius = 25;
-    var markerWidth = 2;
+    var markerWidth = 1;
     var smallBut = document.getElementById("smallBut");
     var medBut = document.getElementById("medBut");
     var larBut = document.getElementById("largeBut");
@@ -26,8 +27,10 @@ $(document).ready(function (){
     var startX;
     var startY;
 
-    var clickedX=lButRadius;
-    var clickedY=lButRadius;
+    var scrnclkX=lButRadius;
+    var scrnclkY=lButRadius;
+    var canvasclkX=0;
+    var canvasclkY=0;
 
     // an array of objects that define different rectangles
     var markers = [];
@@ -45,13 +48,13 @@ $(document).ready(function (){
 
     };
     smallBut.addEventListener("click" , function (e){
-        add(clickedX,clickedY,sButRadius);
+        add(canvasclkX,canvasclkY,sButRadius);
     });
     medBut.addEventListener("click" , function (e){
-        add(clickedX,clickedY,mButRadius);
+        add(canvasclkX,canvasclkY,mButRadius);
     });
     largeBut.addEventListener("click" , function (e){
-        add(clickedX,clickedY,lButRadius);
+        add(canvasclkX,canvasclkY,lButRadius);
     });
     delBut.addEventListener("click" , function (e){
         del();
@@ -60,12 +63,24 @@ $(document).ready(function (){
         makeStartHold();
     });
     canvas.addEventListener('dblclick', function (e){
+        var orientation = window.screen.orientation.type;
 
-        clickedX = getMouseX(e);
-        clickedY = getMouseY(e);
+        scrnclkX = getMouseX(e);
+        scrnclkY = getMouseY(e);
+
+        if(orientation == "portrait-primary" || orientation== "portrait-secondary"){ 
+            canvasclkX = scrnclkX
+            canvasclkY = scrnclkY
+        }else {
+
+            var aspectRatioX = PORTRAITWIDTH / canvas.clientWidth;
+            var aspectRatioY  = PORTRAITHEIGHT / canvas.clientHeight;
+            canvasclkX = scrnclkX * aspectRatioX;
+            canvasclkY = scrnclkY * aspectRatioY;
+        }
+
         //calibration
-        drawCalibrationPoint();
-        if(detectMarksAt(clickedX,clickedY)){
+        if(detectMarksAt(canvasclkX,canvasclkY)){
             displayDel();
         }else{
             displaySizeChoose();
@@ -88,7 +103,7 @@ $(document).ready(function (){
     }
 
     function clear() {
-        ctx.clearRect(0, 0, WIDTH, HEIGHT);
+        ctx.clearRect(0, 0, PORTRAITWIDTH, PORTRAITHEIGHT);
     }
 
     function draw() {
@@ -196,7 +211,7 @@ $(document).ready(function (){
     function del(){
         for (var i = 0; i < markers.length; i++) {
             var mark = markers[i];
-            if (clickedX > mark.x - mark.r && clickedX < mark.x + mark.r && clickedY > mark.y - mark.r && clickedY < mark.y + mark.r) {
+            if (canvasclkX > mark.x - mark.r && canvasclkX < mark.x + mark.r && canvasclkY > mark.y - mark.r && canvasclkY < mark.y + mark.r) {
                 markers.splice(i,1);
             }
         }
@@ -210,21 +225,21 @@ $(document).ready(function (){
         div.css({
             display: 'block',
             position:"absolute", 
-            top: clickedY, 
-            left: clickedX});
+            top: scrnclkY, 
+            left: scrnclkX});
     }
     function displayDel(){
         var div = jQuery("#selectWindow");
         div.css({
             display: 'block',
             position:"absolute", 
-            top:clickedY, 
-            left: clickedX});
+            top:scrnclkY, 
+            left: scrnclkX});
     }
     function makeStartHold(){
         for (var i = 0; i < markers.length; i++) {
             var mark = markers[i];
-            if (clickedX > mark.x - mark.r && clickedX < mark.x + mark.r && clickedY > mark.y - mark.r && clickedY < mark.y + mark.r) {
+            if (canvasclkX > mark.x - mark.r && canvasclkX < mark.x + mark.r && canvasclkY > mark.y - mark.r && canvasclkY < mark.y + mark.r) {
                 if(mark.c==0){
                     mark.c=1;
                 }else{
@@ -247,13 +262,11 @@ $(document).ready(function (){
     function detectMarksAt(x,y){
         for (var i = 0; i < markers.length; i++) {
             var mark = markers[i];
-            if (clickedX > mark.x - mark.r && clickedX < mark.x + mark.r && clickedY > mark.y - mark.r && clickedY < mark.y + mark.r) {
+            if (canvasclkX > mark.x - mark.r && canvasclkX < mark.x + mark.r && canvasclkY > mark.y - mark.r && canvasclkY < mark.y + mark.r) {
                 return true;
             }
         }
         return false;
     }
-    function drawCalibrationPoint(){
-        add(clickedX,clickedY,3);
-    }
+
 });
