@@ -8,7 +8,6 @@
 
 #filter .grade {
 	max-width: 12.5%;
-	transition: opacity 0.15s ease-out;
 }
 
 #filter .grade.inactive {

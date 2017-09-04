@@ -2,6 +2,13 @@
 
 * {
 	box-sizing: border-box;
+
+	/* Global opacity animation. */
+	transition: opacity 0.15s ease-out;
+
+	/* Disable gray highlighting on click for webkit elements. */
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	-webkit-touch-callout: none;
 }
 
 body {
