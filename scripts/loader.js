@@ -61,15 +61,6 @@ $(document).ready(() => {
 	// Load routes from firebase
 	LOADER.loadRoutes().then((routes) => {
 		LOADER.routes = routes;
-		//LOGIN.verify();
-
-		let options = {};
-		options.reset = true;
-		NAV.transition('#menu', options);
-
-
-		// let route = routes[0];
-		// NAV.populateRoute(route);
-		// NAV.transition('#route');
+		LOGIN.verify();
 	});
 });
