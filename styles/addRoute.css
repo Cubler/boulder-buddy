@@ -12,11 +12,42 @@
 #chooseWindow{
 	display: none;
 }
-#saveForm{
-	display: none;
-}
-
 #canvas{border:1px 
 	solid red;
 	stroke-opacity:1.0;
+}
+
+/*Inital graphics for add route buttons*/
+#smallBut{
+	width: 80px;
+	text-align: center;
+	border: 2px solid;
+	background-color: white;
+	border-radius: 12px;
+}
+#medBut{
+	width: 80px;
+	text-align: center;
+	border: 2px solid;
+	background-color: white;
+	border-radius: 12px;
+}
+#largeBut{
+	width: 80px;
+	text-align: center;
+	border: 2px solid;
+	background-color: white;
+	border-radius: 12px;
+}
+#delBut{
+	text-align: center;
+	border: 2px solid;
+	background-color: white;
+	border-radius: 12px;
+}
+#startBut{
+	text-align: center;
+	border: 2px solid;
+	background-color: white;
+	border-radius: 12px;
 }

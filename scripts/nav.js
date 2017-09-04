@@ -53,7 +53,11 @@ let NAV = {
 		let descriptionLabel= $('<div>').addClass('description-label');
 
 		setter.text('Setter: ' + (route.setter || 'Unknown'));
-		picture.attr('src', route.picture);
+		picture.attr('src', 'assets/wall2.jpg');
+		picture.css({
+			width: 800,
+			height: 600
+		});
 		description.text('Description: ' + (route.description || 'N/A'));
 
 		container.append(entry);
@@ -193,6 +197,8 @@ let NAV = {
 			icons.push('fa-plus')
 			actions.push(() => {
 				// Go to creation view
+				// clear
+				$('#canvas')[0].getContext('2d').clearRect(0,0,$('#canvas')[0].width,$('#canvas')[0].height);
 				NAV.transition('#create-route');
 			});
 		} else if (selector == '#routes') {
@@ -204,9 +210,18 @@ let NAV = {
 		} else if (selector == '#create-route') {
 			icons.push('fa-floppy-o');
 			actions.push(() => {
-				alert('You can save the PNG from here, and maybe transition to a new page!');
+				// Go to save view
+				NAV.transition('#save-route');
 			});
+		} else if (selector =='#save-route'){
+			icons.push('fa-floppy-o');
+			actions.push(()=> {
+				// Save the Route to database and go to menu view
+				DATABASE.save();
+				NAV.transition('#menu');
+			})
 		};
+
 
 		// Reveal new actions/icons
 		for (let i = 0; i < actions.length; i++) {
