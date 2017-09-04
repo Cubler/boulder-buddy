@@ -27,12 +27,12 @@ let DATABASE = {
         })
     },
 
-    load: function(){
-        clear();
-        DATABASE.db.ref('/test/map').once('value').then(function(snapshot){
+    loadImage: function(context, key){
+        
+        DATABASE.db.ref('/routes/'+key).once('value').then(function(snapshot){
             var image = new Image();
             image.onload = function(){
-                ctx.drawImage(image,0,0);
+                context.drawImage(image,0,0);
             }
             image.src = snapshot.val();
         });

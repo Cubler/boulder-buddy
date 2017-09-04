@@ -1,8 +1,8 @@
 #photo{
 	background-image: url("../assets/wall2.jpg");
-    width: 800px;
-    height: 600px;
-    background-size: 800px 600px;
+    width: 100vw;
+    height: 100%;
+    background-size: 100vw auto;
 	background-repeat: no-repeat;
 }
 #selectWindow{

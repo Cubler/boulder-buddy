@@ -4,8 +4,8 @@ $(document).ready(function (){
     var ctx = canvas.getContext("2d");
     canvas.style.width='100%';
     canvas.style.height='100%';
-    canvas.width=canvas.offsetWidth;
-    canvas.height=canvas.offsetHeight;
+    canvas.width=$('#photo')[0].clientWidth;
+    canvas.height=$('#photo')[0].clientHeight;
     var BB = canvas.getBoundingClientRect();
     var offsetX = BB.left;
     var offsetY = BB.top;
@@ -14,6 +14,7 @@ $(document).ready(function (){
     var sButRadius = 10;
     var mButRadius = 15;
     var lButRadius = 25;
+    var markerWidth = 2;
     var smallBut = document.getElementById("smallBut");
     var medBut = document.getElementById("medBut");
     var larBut = document.getElementById("largeBut");
@@ -62,7 +63,8 @@ $(document).ready(function (){
 
         clickedX = getMouseX(e);
         clickedY = getMouseY(e);
-
+        //calibration
+        drawCalibrationPoint();
         if(detectMarksAt(clickedX,clickedY)){
             displayDel();
         }else{
@@ -73,7 +75,7 @@ $(document).ready(function (){
 
     function makeMarker(x,y,r,c){
         ctx.beginPath();
-        ctx.lineWidth=5;
+        ctx.lineWidth=markerWidth;
         ctx.arc(x, y, r, 0, 2*Math.PI);
         ctx.closePath();
         if(c==0){
@@ -208,16 +210,16 @@ $(document).ready(function (){
         div.css({
             display: 'block',
             position:"absolute", 
-            top:event.pageY, 
-            left: event.pageX});
+            top: clickedY, 
+            left: clickedX});
     }
     function displayDel(){
         var div = jQuery("#selectWindow");
         div.css({
             display: 'block',
             position:"absolute", 
-            top:event.pageY, 
-            left: event.pageX});
+            top:clickedY, 
+            left: clickedX});
     }
     function makeStartHold(){
         for (var i = 0; i < markers.length; i++) {
@@ -236,11 +238,11 @@ $(document).ready(function (){
     }
 
     function getMouseX(e){
-        return e.clientX;
+        return e.pageX;
     }
 
     function getMouseY(e){
-        return e.clientY;
+        return e.pageY-$('#navbar')[0].clientHeight;
     }
     function detectMarksAt(x,y){
         for (var i = 0; i < markers.length; i++) {
@@ -251,10 +253,7 @@ $(document).ready(function (){
         }
         return false;
     }
-});
-
-let ADDROUTE = {
-    clear: function(){
-        ctx
+    function drawCalibrationPoint(){
+        add(clickedX,clickedY,3);
     }
-}
+});
