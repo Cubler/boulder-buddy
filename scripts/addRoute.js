@@ -6,10 +6,10 @@ $(document).ready(function (){
     canvas.style.height='';
     canvas.width=$('#photo')[0].clientWidth;
     canvas.height=$('#photo')[0].clientHeight;
-    var PORTRAITWIDTH = null;
-    var PORTRAITHEIGHT = null;
-    var LANDSCAPEWIDTH = null;
-    var LANDSCAPEHEIGHT = null;
+    var PORTRAITWIDTH = 0;
+    var PORTRAITHEIGHT = 0;
+    var LANDSCAPEWIDTH = 0;
+    var LANDSCAPEHEIGHT = 0;
     var BB = canvas.getBoundingClientRect();
     var offsetX = BB.left;
     var offsetY = BB.top;
@@ -58,6 +58,11 @@ $(document).ready(function (){
             display: 'none'});
 
     };
+    canvas.touchstart = myDown;
+    canvas.touchend = myUp;
+    canvas.touchmove = myMove;
+
+
     smallBut.addEventListener("click" , function (e){
         add(canvasclkX,canvasclkY,sButRadius);
     });
@@ -77,7 +82,6 @@ $(document).ready(function (){
 
         setClkPositions(e);
 
-        //calibration
         if(detectMarksAt(canvasclkX,canvasclkY)){
             displayDel();
         }else{
@@ -101,7 +105,9 @@ $(document).ready(function (){
     }
 
     function clear() {
-        ctx.clearRect(0, 0, PORTRAITWIDTH, PORTRAITHEIGHT);
+        var maxWidth = (PORTRAITWIDTH>LANDSCAPEWIDTH) ? PORTRAITWIDTH: LANDSCAPEWIDTH;
+        var maxHeight = (PORTRAITHEIGHT>LANDSCAPEHEIGHT) ? PORTRAITHEIGHT: LANDSCAPEHEIGHT;
+        ctx.clearRect(0, 0, maxWidth, maxHeight);
     }
 
     function draw() {
