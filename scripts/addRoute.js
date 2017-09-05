@@ -22,6 +22,9 @@ $(document).ready(function (){
     var larBut = document.getElementById("largeBut");
     var delBut = document.getElementById("delBut");
     var startBut = document.getElementById("startBut");
+    var timeout, longtouch
+    var timeoutDuration = 100;
+    var move=false;
     
     // drag related variables
     var dragok = false;
@@ -48,46 +51,163 @@ $(document).ready(function (){
     }
 
     // listen for mouse events
-    canvas.onmousedown = myDown;
-    canvas.onmouseup = myUp;
-    canvas.onmousemove = myMove;
-    canvas.onclick = function(){
-        jQuery("#chooseWindow").css({
-            display: 'none'});
-        jQuery("#selectWindow").css({
-            display: 'none'});
+    // canvas.onmousedown = myDown;
+    // canvas.onmouseup = myUp;
+    // canvas.onmousemove = myMove;
+    // canvas.onclick = function(){
+    //     jQuery("#chooseWindow").css({
+    //         display: 'none'});
+    //     jQuery("#selectWindow").css({
+    //         display: 'none'});
 
-    };
-    canvas.touchstart = myDown;
-    canvas.touchend = myUp;
-    canvas.touchmove = myMove;
+    // };
+
+    // smallBut.addEventListener("click" , function (e){
+    //     add(canvasclkX,canvasclkY,sButRadius);
+    // });
+    // medBut.addEventListener("click" , function (e){
+    //     add(canvasclkX,canvasclkY,mButRadius);
+    // });
+    // largeBut.addEventListener("click" , function (e){
+    //     add(canvasclkX,canvasclkY,lButRadius);
+    // });
+    // delBut.addEventListener("click" , function (e){
+    //     del();
+    // });
+    // startBut.addEventListener("click" , function (e){
+    //     makeStartHold();
+    // });
+    // canvas.addEventListener('dblclick', function (e){
+    //     setClkPositions(e);
+    //     if(detectMarksAt(canvasclkX,canvasclkY)){
+    //         displayDel();
+    //     }else{
+    //         displaySizeChoose();
+    //     }
+        
+    // });
+
+    // //Mobile Support mouse events
+
+    canvas.addEventListener('touchstart', function (e){
+		
+		if(e.touches.length==1){
+ 			e.preventDefault();
+			timeout = setTimeout(function() {
+				longtouch=true;
+			}, timeoutDuration);
+ 			setClkPositions(e);
+    		if(detectMarksAt(canvasclkX,canvasclkY)){
+    			myDown(e);
+    		}
+			console.log(e.touches.length)
+			longtouch=false;
+			clearTimeout(timeout);
+ 		}else{
+			console.log(e.touches.length)
+			longtouch=false;
+			clearTimeout(timeout);
+ 		} 	
+
+    	// if(move){
+    	// 	myDown(e);
+    	// }else{
+    	// 	if(e.touches.length>1){
+
+ 		  //  	}else {
+	    // 		timeout = setTimeout(function() {
+    	// 			longtouch=true;
+    	// 		}, timeoutDuration);
+    	// 	}
+    	// }
+	});
+    canvas.addEventListener('touchend', function (e){
+    	
+    	if(e.touches.lengt==1){
+    		e.preventDefault();
+			if(longtouch){
+				setClkPositions(e);
+				if(detectMarksAt(canvasclkX,canvasclkY)){
+					displayDel();
+				}else{
+					displaySizeChoose();
+				}
+			}
+			longtouch=false;
+			clearTimeout(timeout);
+ 		}else{
+ 			longtouch=false;
+			clearTimeout(timeout);
+ 		}
 
 
-    smallBut.addEventListener("click" , function (e){
+
+
+    	// if(move){
+    	// 	longtouch=false;
+    	// 	clearTimeout(timeout);
+    	// 	myUp(e);
+    	// }else{
+    	// 	if(e.touches.length>1){
+
+    	// 	}else {
+    	// 		if(longtouch){
+    	// 			setClkPositions(e);
+    	// 			if(detectMarksAt(canvasclkX,canvasclkY)){
+    	// 				displayDel();
+    	// 			}else{
+    	// 				displaySizeChoose();
+    	// 			}
+    	// 		}
+    	// 		longtouch=false;
+    	// 		clearTimeout(timeout);
+    	// 	}
+    	// }
+    });
+
+    canvas.addEventListener('touchmove', function (e){
+    	
+
+    	if(e.touches.length==1){
+    		e.preventDefault();
+    		myMove(e);
+    	}else {
+    		longtouch=false;
+			clearTimeout(timeout);
+    	}
+
+
+    	// if(move){
+    	// 	myMove(e);
+    	// }else{
+    	// 	if(e.touches.length>1){
+    			
+    	// 	}
+    	// }
+    });
+
+
+    $('#smallBut').on("vclick" , function (e){
         add(canvasclkX,canvasclkY,sButRadius);
     });
-    medBut.addEventListener("click" , function (e){
+    $('#medBut').on("vclick" , function (e){
         add(canvasclkX,canvasclkY,mButRadius);
     });
-    largeBut.addEventListener("click" , function (e){
+    $('#largeBut').on("vclick" , function (e){
         add(canvasclkX,canvasclkY,lButRadius);
     });
-    delBut.addEventListener("click" , function (e){
+    $('#delBut').on("vclick" , function (e){
         del();
     });
-    startBut.addEventListener("click" , function (e){
+    $('#startBut').on("vclick" , function (e){
         makeStartHold();
     });
-    canvas.addEventListener('dblclick', function (e){
-
-        setClkPositions(e);
-
-        if(detectMarksAt(canvasclkX,canvasclkY)){
-            displayDel();
+    $('#moveBut').on("vclick" , function (e){
+        if(move){
+        	move=false;
         }else{
-            displaySizeChoose();
+        	move=true;
         }
-        
     });
 
     function makeMarker(x,y,r,c){
@@ -100,7 +220,6 @@ $(document).ready(function (){
         }else {
             ctx.strokeStyle = 'rgba(0,255,0,1)';
         }
-        
         ctx.stroke();
     }
 
@@ -125,10 +244,19 @@ $(document).ready(function (){
         // tell the browser we're handling this mouse event
         e.preventDefault();
         e.stopPropagation();
+        var mx,my;
 
         // get the current mouse position
-        var mx = scrnclkX;
-        var my = scrnclkY;
+        if(move && e.type=="touchstart"){
+        	mx = canvasclkX;
+        	my = canvasclkY;
+        	setClkPositions(e);
+        }else{
+        	setClkPositions(e);
+        	mx = canvasclkX;
+        	my = canvasclkY;
+        }
+        // setClkPositions(e);
 
         // test each rect to see if mouse is inside
         dragok = false;
@@ -168,11 +296,13 @@ $(document).ready(function (){
             // tell the browser we're handling this mouse event
             e.preventDefault();
             e.stopPropagation();
-
+            var mx, my;
             // get the current mouse position
-            var mx = parseInt(e.clientX - offsetX);
-            var my = parseInt(e.clientY - offsetY);
 
+           	setClkPositions(e);
+          	mx = canvasclkX;
+           	my = canvasclkY;
+            
             // calculate the distance the mouse has moved
             // since the last mousemove
             var dx = mx - startX;
@@ -225,6 +355,9 @@ $(document).ready(function (){
     }
 
     function displaySizeChoose(){
+    	jQuery("#selectWindow").css({
+            display: 'none'
+        });
         var div = jQuery("#chooseWindow");
         div.css({
             display: 'block',
@@ -233,6 +366,9 @@ $(document).ready(function (){
             left: scrnclkX});
     }
     function displayDel(){
+    	jQuery("#chooseWindow").css({
+            display: 'none'
+        });
         var div = jQuery("#selectWindow");
         div.css({
             display: 'block',
@@ -257,41 +393,44 @@ $(document).ready(function (){
     }
 
     function setClkPositions(e){
-        scrnclkX = e.pageX;
-        scrnclkY = e.pageY-$('#navbar')[0].clientHeight;
 
+    	if(e.type=="touchend"){
+    		scrnclkX = e.changedTouches[0].pageX;
+        	scrnclkY = e.changedTouches[0].pageY-$('#navbar')[0].clientHeight;
+    	}else{
+        	scrnclkX = e.pageX;
+        	scrnclkY = e.pageY-$('#navbar')[0].clientHeight;
+    	}
         //Orientation depended position for canvas
         var orientation = window.screen.orientation.type;
-        
 
         if(orientation == defaultOrientation){ 
             canvasclkX = scrnclkX
             canvasclkY = scrnclkY
         }else {
+            //ratio = DEFAULT / NEW
+            var aspectRatioX, aspectRatioY;
             //not default oridentation
             if(orientation == "portrait-primary" || defaultOrientation == "portrait-secondary"){
                 PORTRAITWIDTH = canvas.clientWidth;
                 PORTRAITHEIGHT = canvas.clientHeight;
-
-                //ratio = DEFAULT / NEW
-                var aspectRatioX = LANDSCAPEWIDTH / PORTRAITWIDTH;
-                var aspectRatioY  = LANDSCAPEHEIGHT / PORTRAITHEIGHT;
-
-                canvasclkX = scrnclkX * aspectRatioX;
-                canvasclkY = scrnclkY * aspectRatioY;
+                
+                aspectRatioX = LANDSCAPEWIDTH / PORTRAITWIDTH;
+                aspectRatioY  = LANDSCAPEHEIGHT / PORTRAITHEIGHT;
             }else {
                 LANDSCAPEWIDTH = canvas.clientWidth;
                 LANDSCAPEHEIGHT = canvas.clientHeight;
 
-                var aspectRatioX = PORTRAITWIDTH / LANDSCAPEWIDTH;
-                var aspectRatioY  = PORTRAITHEIGHT / LANDSCAPEHEIGHT;
-
-                canvasclkX = scrnclkX * aspectRatioX;
-                canvasclkY = scrnclkY * aspectRatioY;
+                aspectRatioX = PORTRAITWIDTH / LANDSCAPEWIDTH;
+                aspectRatioY  = PORTRAITHEIGHT / LANDSCAPEHEIGHT;
             }
+            canvasclkX = scrnclkX * aspectRatioX;
+            canvasclkY = scrnclkY * aspectRatioY;
         }
 
     }
+
+
     function detectMarksAt(x,y){
         for (var i = 0; i < markers.length; i++) {
             var mark = markers[i];
