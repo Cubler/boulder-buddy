@@ -174,9 +174,7 @@ $(document).ready(function (){
 
     // handle mousedown events
     function myDown(e) {
-    	if(longtouch){
-    		return;
-    	}
+
         // tell the browser we're handling this mouse event
         e.preventDefault();
         e.stopPropagation();
