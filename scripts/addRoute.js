@@ -13,9 +13,9 @@ $(document).ready(function (){
     var BB = canvas.getBoundingClientRect();
     var offsetX = BB.left;
     var offsetY = BB.top;
-    var sButRadius = 10;
-    var mButRadius = 15;
-    var lButRadius = 25;
+    var sButRadius = 5;
+    var mButRadius = 9;
+    var lButRadius = 13;
     var markerWidth = 1;
     var smallBut = document.getElementById("smallBut");
     var medBut = document.getElementById("medBut");
@@ -24,7 +24,9 @@ $(document).ready(function (){
     var startBut = document.getElementById("startBut");
     var timeout, longtouch
     var timeoutDuration = 100;
-    var move=false;
+    var moved=false;
+    var hardCaliX=-5;
+    var hardCaliY=-2;
     
     // drag related variables
     var dragok = false;
@@ -51,139 +53,78 @@ $(document).ready(function (){
     }
 
     // listen for mouse events
-    // canvas.onmousedown = myDown;
-    // canvas.onmouseup = myUp;
-    // canvas.onmousemove = myMove;
-    // canvas.onclick = function(){
-    //     jQuery("#chooseWindow").css({
-    //         display: 'none'});
-    //     jQuery("#selectWindow").css({
-    //         display: 'none'});
+    canvas.onmousedown = myDown;
+    canvas.onmouseup = myUp;
+    canvas.onmousemove = myMove;
+    canvas.onclick = function(){
+        jQuery("#chooseWindow").css({
+            display: 'none'});
+        jQuery("#selectWindow").css({
+            display: 'none'});
 
-    // };
+    };
 
-    // smallBut.addEventListener("click" , function (e){
-    //     add(canvasclkX,canvasclkY,sButRadius);
-    // });
-    // medBut.addEventListener("click" , function (e){
-    //     add(canvasclkX,canvasclkY,mButRadius);
-    // });
-    // largeBut.addEventListener("click" , function (e){
-    //     add(canvasclkX,canvasclkY,lButRadius);
-    // });
-    // delBut.addEventListener("click" , function (e){
-    //     del();
-    // });
-    // startBut.addEventListener("click" , function (e){
-    //     makeStartHold();
-    // });
-    // canvas.addEventListener('dblclick', function (e){
-    //     setClkPositions(e);
-    //     if(detectMarksAt(canvasclkX,canvasclkY)){
-    //         displayDel();
-    //     }else{
-    //         displaySizeChoose();
-    //     }
+    smallBut.addEventListener("click" , function (e){
+        add(canvasclkX,canvasclkY,sButRadius);
+    });
+    medBut.addEventListener("click" , function (e){
+        add(canvasclkX,canvasclkY,mButRadius);
+    });
+    largeBut.addEventListener("click" , function (e){
+        add(canvasclkX,canvasclkY,lButRadius);
+    });
+    delBut.addEventListener("click" , function (e){
+        del();
+    });
+    startBut.addEventListener("click" , function (e){
+        makeStartHold();
+    });
+    canvas.addEventListener('dblclick', function (e){
+        setClkPositions(e);
+        if(detectMarksAt(canvasclkX,canvasclkY)){
+            displayDel();
+        }else{
+            displaySizeChoose();
+        }
         
-    // });
+    });
 
     // //Mobile Support mouse events
 
     canvas.addEventListener('touchstart', function (e){
-		
-		if(e.touches.length==1){
- 			e.preventDefault();
-			timeout = setTimeout(function() {
-				longtouch=true;
-			}, timeoutDuration);
- 			setClkPositions(e);
-    		if(detectMarksAt(canvasclkX,canvasclkY)){
-    			myDown(e);
-    		}
-			console.log(e.touches.length)
-			longtouch=false;
-			clearTimeout(timeout);
- 		}else{
-			console.log(e.touches.length)
-			longtouch=false;
-			clearTimeout(timeout);
- 		} 	
+		jQuery("#chooseWindow").css({
+            display: 'none'});
+        jQuery("#selectWindow").css({
+            display: 'none'});
+		timeout = e.timeStamp;
+		moved=false;
+		setClkPositions(e);
+    	if(detectMarksAt(canvasclkX,canvasclkY)){
+			myDown(e);
+    	}else {
+	
+    	}
 
-    	// if(move){
-    	// 	myDown(e);
-    	// }else{
-    	// 	if(e.touches.length>1){
-
- 		  //  	}else {
-	    // 		timeout = setTimeout(function() {
-    	// 			longtouch=true;
-    	// 		}, timeoutDuration);
-    	// 	}
-    	// }
 	});
     canvas.addEventListener('touchend', function (e){
     	
-    	if(e.touches.lengt==1){
-    		e.preventDefault();
-			if(longtouch){
-				setClkPositions(e);
-				if(detectMarksAt(canvasclkX,canvasclkY)){
-					displayDel();
-				}else{
+    	if(((e.timeStamp-timeout) > timeoutDuration)){
+			setClkPositions(e);
+			if(detectMarksAt(canvasclkX,canvasclkY)){
+				displayDel();
+			}else{
+				if(!moved){
 					displaySizeChoose();
 				}
 			}
-			longtouch=false;
-			clearTimeout(timeout);
- 		}else{
- 			longtouch=false;
-			clearTimeout(timeout);
- 		}
-
-
-
-
-    	// if(move){
-    	// 	longtouch=false;
-    	// 	clearTimeout(timeout);
-    	// 	myUp(e);
-    	// }else{
-    	// 	if(e.touches.length>1){
-
-    	// 	}else {
-    	// 		if(longtouch){
-    	// 			setClkPositions(e);
-    	// 			if(detectMarksAt(canvasclkX,canvasclkY)){
-    	// 				displayDel();
-    	// 			}else{
-    	// 				displaySizeChoose();
-    	// 			}
-    	// 		}
-    	// 		longtouch=false;
-    	// 		clearTimeout(timeout);
-    	// 	}
-    	// }
+    	}
+    	moved=false;
+    	myUp(e);
     });
 
     canvas.addEventListener('touchmove', function (e){
-    	
-
-    	if(e.touches.length==1){
-    		e.preventDefault();
-    		myMove(e);
-    	}else {
-    		longtouch=false;
-			clearTimeout(timeout);
-    	}
-
-
-    	// if(move){
-    	// 	myMove(e);
-    	// }else{
-    	// 	if(e.touches.length>1){
-    			
-    	// 	}
-    	// }
+    	moved = true;
+		myMove(e);
     });
 
 
@@ -201,13 +142,6 @@ $(document).ready(function (){
     });
     $('#startBut').on("vclick" , function (e){
         makeStartHold();
-    });
-    $('#moveBut').on("vclick" , function (e){
-        if(move){
-        	move=false;
-        }else{
-        	move=true;
-        }
     });
 
     function makeMarker(x,y,r,c){
@@ -240,23 +174,18 @@ $(document).ready(function (){
 
     // handle mousedown events
     function myDown(e) {
-
+    	if(longtouch){
+    		return;
+    	}
         // tell the browser we're handling this mouse event
         e.preventDefault();
         e.stopPropagation();
         var mx,my;
 
         // get the current mouse position
-        if(move && e.type=="touchstart"){
-        	mx = canvasclkX;
-        	my = canvasclkY;
-        	setClkPositions(e);
-        }else{
-        	setClkPositions(e);
-        	mx = canvasclkX;
-        	my = canvasclkY;
-        }
-        // setClkPositions(e);
+        setClkPositions(e);
+        mx = canvasclkX;
+        my = canvasclkY;
 
         // test each rect to see if mouse is inside
         dragok = false;
@@ -359,22 +288,26 @@ $(document).ready(function (){
             display: 'none'
         });
         var div = jQuery("#chooseWindow");
+        var h=(scrnclkY-div[0].clientHeight);
+        var w=(scrnclkX-div[0].clientWidth);
         div.css({
             display: 'block',
             position:"absolute", 
-            top: scrnclkY, 
-            left: scrnclkX});
+            top: h,
+            left: w});
     }
     function displayDel(){
     	jQuery("#chooseWindow").css({
             display: 'none'
         });
         var div = jQuery("#selectWindow");
+        var h=(scrnclkY-div[0].clientHeight);
+        var w=(scrnclkX-div[0].clientWidth);
         div.css({
             display: 'block',
             position:"absolute", 
-            top:scrnclkY, 
-            left: scrnclkX});
+            top:h, 
+            left: w});
     }
     function makeStartHold(){
         for (var i = 0; i < markers.length; i++) {
@@ -397,7 +330,11 @@ $(document).ready(function (){
     	if(e.type=="touchend"){
     		scrnclkX = e.changedTouches[0].pageX;
         	scrnclkY = e.changedTouches[0].pageY-$('#navbar')[0].clientHeight;
-    	}else{
+    	}else if(e.type =="touchstart" || e.type =="touchmove"){
+    		scrnclkX= e.touches[0].pageX;
+    		scrnclkY= e.touches[0].pageY-$('#navbar')[0].clientHeight;
+    	}
+    	else{
         	scrnclkX = e.pageX;
         	scrnclkY = e.pageY-$('#navbar')[0].clientHeight;
     	}
@@ -427,6 +364,10 @@ $(document).ready(function (){
             canvasclkX = scrnclkX * aspectRatioX;
             canvasclkY = scrnclkY * aspectRatioY;
         }
+        canvasclkX+=hardCaliX;
+        canvasclkY+=hardCaliY;
+        scrnclkX+=hardCaliX;
+        scrnclkY+=hardCaliY;
 
     }
 
