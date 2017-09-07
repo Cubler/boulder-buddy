@@ -98,17 +98,13 @@ $(document).ready(function (){
             display: 'none'});
 		timeout = setTimeout(function() {
             setClkPositions(e);
-            if(detectMarksAt(canvasclkX,canvasclkY)){
-                displayDel();
-            }else{
-                if(!moved){
-                    displaySizeChoose();
-                }
+            if(!detectMarksAt(canvasclkX,canvasclkY)){
+                displaySizeChoose();
             }
         }, timeoutDuration);
-		moved=false;
 		setClkPositions(e);
     	if(detectMarksAt(canvasclkX,canvasclkY)){
+    		displayDel();
 			myDown(e);
     	}else {
 	
@@ -117,13 +113,11 @@ $(document).ready(function (){
 	});
     canvas.addEventListener('touchend', function (e){
         clearTimeout(timeout);
-    	moved=false;
     	myUp(e);
     });
 
     canvas.addEventListener('touchmove', function (e){
         clearTimeout(timeout);
-    	moved = true;
 		myMove(e);
     });
 
