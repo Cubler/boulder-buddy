@@ -23,7 +23,7 @@ $(document).ready(function (){
     var delBut = document.getElementById("delBut");
     var startBut = document.getElementById("startBut");
     var timeout, longtouch
-    var timeoutDuration = 100;
+    var timeoutDuration = 300;
     var moved=false;
     var hardCaliX=-5;
     var hardCaliY=-2;
@@ -96,7 +96,16 @@ $(document).ready(function (){
             display: 'none'});
         jQuery("#selectWindow").css({
             display: 'none'});
-		timeout = e.timeStamp;
+		timeout = setTimeout(function() {
+            setClkPositions(e);
+            if(detectMarksAt(canvasclkX,canvasclkY)){
+                displayDel();
+            }else{
+                if(!moved){
+                    displaySizeChoose();
+                }
+            }
+        }, timeoutDuration);
 		moved=false;
 		setClkPositions(e);
     	if(detectMarksAt(canvasclkX,canvasclkY)){
@@ -107,40 +116,35 @@ $(document).ready(function (){
 
 	});
     canvas.addEventListener('touchend', function (e){
-    	
-    	if(((e.timeStamp-timeout) > timeoutDuration)){
-			setClkPositions(e);
-			if(detectMarksAt(canvasclkX,canvasclkY)){
-				displayDel();
-			}else{
-				if(!moved){
-					displaySizeChoose();
-				}
-			}
-    	}
+        clearTimeout(timeout);
     	moved=false;
     	myUp(e);
     });
 
     canvas.addEventListener('touchmove', function (e){
+        clearTimeout(timeout);
     	moved = true;
 		myMove(e);
     });
 
+    window.onload = function() {
+        document.onselectstart = function() {return false;} // ie
+    }
 
-    $('#smallBut').on("vclick" , function (e){
+
+    $('#smallBut').on("touchstart" , function (e){
         add(canvasclkX,canvasclkY,sButRadius);
     });
-    $('#medBut').on("vclick" , function (e){
+    $('#medBut').on("touchstart" , function (e){
         add(canvasclkX,canvasclkY,mButRadius);
     });
-    $('#largeBut').on("vclick" , function (e){
+    $('#largeBut').on("touchstart" , function (e){
         add(canvasclkX,canvasclkY,lButRadius);
     });
-    $('#delBut').on("vclick" , function (e){
+    $('#delBut').on("touchstart" , function (e){
         del();
     });
-    $('#startBut').on("vclick" , function (e){
+    $('#startBut').on("touchstart" , function (e){
         makeStartHold();
     });
 
