@@ -77,14 +77,11 @@ let NAV = {
 
 		// Calculate number of favorites a route has,
 		// and whether or not the user has favorited
-		// this route.
-		let numFavorites = 0;
-		let hasFavorited = false;
-		if (route.favorites) {
-			let userIDs = Object.keys(route.favorites);
-			numFavorites = userIDs.length;
-			hasFavorited = route.favorites[LOGIN.userID] || false;
-		}
+		// this route. Expects route.favorites to be
+		// an object (e.g. not undefined).
+		let userIDs = Object.keys(route.favorites);
+		let numFavorites = userIDs.length;
+		let hasFavorited = route.favorites[LOGIN.userID] || false;
 
 		grade.text(route.grade || 'V?');
 		name.text(route.name || 'Untitled');
