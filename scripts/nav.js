@@ -75,9 +75,20 @@ let NAV = {
 		let favorites = $('<span>').addClass('favorites');
 		let favoritesIcon = $('<i>').addClass('fa fa-heart');
 
+		// Calculate number of favorites a route has,
+		// and whether or not the user has favorited
+		// this route.
+		let numFavorites = 0;
+		let hasFavorited = false;
+		if (route.favorites) {
+			let userIDs = Object.keys(route.favorites);
+			numFavorites = userIDs.length;
+			hasFavorited = route.favorites[LOGIN.userID] || false;
+		}
+
 		grade.text(route.grade || 'V?');
 		name.text(route.name || 'Untitled');
-		favorites.text(route.favorites || 0);
+		favorites.text(numFavorites);
 
 		entry.append(grade);
 		entry.append(name);
@@ -88,7 +99,25 @@ let NAV = {
 		if (options.enableFavoritesAction) {
 			favoritesIcon.click(function() {
 				$(this).toggleClass('favorited');
+				hasFavorited = ! hasFavorited;
+
+				// Update favorited status
+				if (hasFavorited) {
+					route.favorites[LOGIN.userID] = true;
+					numFavorites++;
+				} else {
+					delete route.favorites[LOGIN.userID];
+					numFavorites--;
+				}
+
+				favorites.text(numFavorites);
 			});
+		}
+
+		// Toggle favorites icon if this route
+		// has been favorited by the user
+		if (hasFavorited) {
+			favoritesIcon.addClass('favorited');
 		}
 
 		return entry;
@@ -302,12 +331,14 @@ $(document).ready(() => {
 			NAV.populateRoutes(routes);
 		} else if (id == 'favorite-routes') {
 			// Get favorite routes
-			// TODO
-			NAV.populateRoutes(routes);
+			let filtered = routes.filter((route) => {
+				return route.favorites[LOGIN.userID] || false;
+			});
+			NAV.populateRoutes(filtered);
 		} else if (id == 'my-routes') {
 			// Show routes created by logged-in user
 			let filtered = routes.filter((route) => {
-				return route.setter == LOGIN.name;
+				return route.userID == LOGIN.userID;
 			});
 			NAV.populateRoutes(filtered);
 		} else {
