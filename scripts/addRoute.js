@@ -5,7 +5,7 @@ $(document).ready(function (){
     canvas.style.width='100%';
     canvas.style.height='';
     canvas.width=$('#photo')[0].clientWidth;
-    canvas.height=$('#photo')[0].clientHeight;
+    canvas.height=canvas.width/LOADER.wallAspect;
     var PORTRAITWIDTH = 0;
     var PORTRAITHEIGHT = 0;
     var LANDSCAPEWIDTH = 0;

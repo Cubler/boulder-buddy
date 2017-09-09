@@ -12,8 +12,8 @@ let LOADER = {
 
 	// All routes from server
 	routes: [],
-	wallAspect: 4032/3024;
-	caveAspect: 1/wallAspect;
+	wallAspect: 4032/3024,
+	caveAspect: 3024/4032,
 
 	loadRoutes: () => {
 		// Return a promise containing all the routes
@@ -38,7 +38,7 @@ $(document).ready(() => {
 	// Load routes from firebase
 	LOADER.loadRoutes().then((routes) => {
 		LOADER.routes=routes;
-		// LOGIN.verify();
-		NAV.transition('#menu');	
+		LOGIN.verify();
+		// NAV.transition('#menu');	
 	});
 });
