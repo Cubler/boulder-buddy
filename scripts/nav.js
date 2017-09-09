@@ -56,7 +56,7 @@ let NAV = {
 	    viewCanvas.style.width='100%';
 	    viewCanvas.style.height='';
 	    viewCanvas.width=$('#photo')[0].clientWidth;
-	    viewCanvas.height=$('#photo')[0].clientHeight;
+	    viewCanvas.height=viewCanvas.width/LOADER.wallAspect;
 		let context = viewCanvas.getContext('2d');
 
 	    DATABASE.loadMap(route.key).then((map) =>{
@@ -74,7 +74,7 @@ let NAV = {
 		picture.css({
 			'background-image': 'url(../assets/wall2.jpg)',
 			'width': '100vw',
-    		'height': '',
+    		'height': '100%',
     		'background-size': '100vw auto',
 			'background-repeat': 'no-repeat'
 		});
