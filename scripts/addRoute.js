@@ -13,15 +13,20 @@ $(document).ready(function (){
     var BB = canvas.getBoundingClientRect();
     var offsetX = BB.left;
     var offsetY = BB.top;
-    var sButRadius = 10;
-    var mButRadius = 15;
-    var lButRadius = 25;
+    var sButRadius = 5;
+    var mButRadius = 9;
+    var lButRadius = 13;
     var markerWidth = 1;
     var smallBut = document.getElementById("smallBut");
     var medBut = document.getElementById("medBut");
     var larBut = document.getElementById("largeBut");
     var delBut = document.getElementById("delBut");
     var startBut = document.getElementById("startBut");
+    var timeout, longtouch
+    var timeoutDuration = 300;
+    var moved=false;
+    var hardCaliX=-5;
+    var hardCaliY=-2;
     
     // drag related variables
     var dragok = false;
@@ -58,10 +63,6 @@ $(document).ready(function (){
             display: 'none'});
 
     };
-    canvas.touchstart = myDown;
-    canvas.touchend = myUp;
-    canvas.touchmove = myMove;
-
 
     smallBut.addEventListener("click" , function (e){
         add(canvasclkX,canvasclkY,sButRadius);
@@ -79,15 +80,66 @@ $(document).ready(function (){
         makeStartHold();
     });
     canvas.addEventListener('dblclick', function (e){
-
         setClkPositions(e);
-
         if(detectMarksAt(canvasclkX,canvasclkY)){
             displayDel();
         }else{
             displaySizeChoose();
         }
         
+    });
+
+    // //Mobile Support mouse events
+
+    canvas.addEventListener('touchstart', function (e){
+		jQuery("#chooseWindow").css({
+            display: 'none'});
+        jQuery("#selectWindow").css({
+            display: 'none'});
+		timeout = setTimeout(function() {
+            setClkPositions(e);
+            if(!detectMarksAt(canvasclkX,canvasclkY)){
+                displaySizeChoose();
+            }
+        }, timeoutDuration);
+		setClkPositions(e);
+    	if(detectMarksAt(canvasclkX,canvasclkY)){
+    		displayDel();
+			myDown(e);
+    	}else {
+	
+    	}
+
+	});
+    canvas.addEventListener('touchend', function (e){
+        clearTimeout(timeout);
+    	myUp(e);
+    });
+
+    canvas.addEventListener('touchmove', function (e){
+        clearTimeout(timeout);
+		myMove(e);
+    });
+
+    window.onload = function() {
+        document.onselectstart = function() {return false;} // ie
+    }
+
+
+    $('#smallBut').on("touchstart" , function (e){
+        add(canvasclkX,canvasclkY,sButRadius);
+    });
+    $('#medBut').on("touchstart" , function (e){
+        add(canvasclkX,canvasclkY,mButRadius);
+    });
+    $('#largeBut').on("touchstart" , function (e){
+        add(canvasclkX,canvasclkY,lButRadius);
+    });
+    $('#delBut').on("touchstart" , function (e){
+        del();
+    });
+    $('#startBut').on("touchstart" , function (e){
+        makeStartHold();
     });
 
     function makeMarker(x,y,r,c){
@@ -100,7 +152,6 @@ $(document).ready(function (){
         }else {
             ctx.strokeStyle = 'rgba(0,255,0,1)';
         }
-        
         ctx.stroke();
     }
 
@@ -125,10 +176,12 @@ $(document).ready(function (){
         // tell the browser we're handling this mouse event
         e.preventDefault();
         e.stopPropagation();
+        var mx,my;
 
         // get the current mouse position
-        var mx = scrnclkX;
-        var my = scrnclkY;
+        setClkPositions(e);
+        mx = canvasclkX;
+        my = canvasclkY;
 
         // test each rect to see if mouse is inside
         dragok = false;
@@ -168,11 +221,13 @@ $(document).ready(function (){
             // tell the browser we're handling this mouse event
             e.preventDefault();
             e.stopPropagation();
-
+            var mx, my;
             // get the current mouse position
-            var mx = parseInt(e.clientX - offsetX);
-            var my = parseInt(e.clientY - offsetY);
 
+           	setClkPositions(e);
+          	mx = canvasclkX;
+           	my = canvasclkY;
+            
             // calculate the distance the mouse has moved
             // since the last mousemove
             var dx = mx - startX;
@@ -225,20 +280,30 @@ $(document).ready(function (){
     }
 
     function displaySizeChoose(){
+    	jQuery("#selectWindow").css({
+            display: 'none'
+        });
         var div = jQuery("#chooseWindow");
+        var h=(scrnclkY-div[0].clientHeight);
+        var w=(scrnclkX-div[0].clientWidth);
         div.css({
             display: 'block',
             position:"absolute", 
-            top: scrnclkY, 
-            left: scrnclkX});
+            top: h,
+            left: w});
     }
     function displayDel(){
+    	jQuery("#chooseWindow").css({
+            display: 'none'
+        });
         var div = jQuery("#selectWindow");
+        var h=(scrnclkY-div[0].clientHeight);
+        var w=(scrnclkX-div[0].clientWidth);
         div.css({
             display: 'block',
             position:"absolute", 
-            top:scrnclkY, 
-            left: scrnclkX});
+            top:h, 
+            left: w});
     }
     function makeStartHold(){
         for (var i = 0; i < markers.length; i++) {
@@ -257,41 +322,52 @@ $(document).ready(function (){
     }
 
     function setClkPositions(e){
-        scrnclkX = e.pageX;
-        scrnclkY = e.pageY-$('#navbar')[0].clientHeight;
 
+    	if(e.type=="touchend"){
+    		scrnclkX = e.changedTouches[0].pageX;
+        	scrnclkY = e.changedTouches[0].pageY-$('#navbar')[0].clientHeight;
+    	}else if(e.type =="touchstart" || e.type =="touchmove"){
+    		scrnclkX= e.touches[0].pageX;
+    		scrnclkY= e.touches[0].pageY-$('#navbar')[0].clientHeight;
+    	}
+    	else{
+        	scrnclkX = e.pageX;
+        	scrnclkY = e.pageY-$('#navbar')[0].clientHeight;
+    	}
         //Orientation depended position for canvas
         var orientation = window.screen.orientation.type;
-        
 
         if(orientation == defaultOrientation){ 
             canvasclkX = scrnclkX
             canvasclkY = scrnclkY
         }else {
+            //ratio = DEFAULT / NEW
+            var aspectRatioX, aspectRatioY;
             //not default oridentation
             if(orientation == "portrait-primary" || defaultOrientation == "portrait-secondary"){
                 PORTRAITWIDTH = canvas.clientWidth;
                 PORTRAITHEIGHT = canvas.clientHeight;
-
-                //ratio = DEFAULT / NEW
-                var aspectRatioX = LANDSCAPEWIDTH / PORTRAITWIDTH;
-                var aspectRatioY  = LANDSCAPEHEIGHT / PORTRAITHEIGHT;
-
-                canvasclkX = scrnclkX * aspectRatioX;
-                canvasclkY = scrnclkY * aspectRatioY;
+                
+                aspectRatioX = LANDSCAPEWIDTH / PORTRAITWIDTH;
+                aspectRatioY  = LANDSCAPEHEIGHT / PORTRAITHEIGHT;
             }else {
                 LANDSCAPEWIDTH = canvas.clientWidth;
                 LANDSCAPEHEIGHT = canvas.clientHeight;
 
-                var aspectRatioX = PORTRAITWIDTH / LANDSCAPEWIDTH;
-                var aspectRatioY  = PORTRAITHEIGHT / LANDSCAPEHEIGHT;
-
-                canvasclkX = scrnclkX * aspectRatioX;
-                canvasclkY = scrnclkY * aspectRatioY;
+                aspectRatioX = PORTRAITWIDTH / LANDSCAPEWIDTH;
+                aspectRatioY  = PORTRAITHEIGHT / LANDSCAPEHEIGHT;
             }
+            canvasclkX = scrnclkX * aspectRatioX;
+            canvasclkY = scrnclkY * aspectRatioY;
         }
+        canvasclkX+=hardCaliX;
+        canvasclkY+=hardCaliY;
+        scrnclkX+=hardCaliX;
+        scrnclkY+=hardCaliY;
 
     }
+
+
     function detectMarksAt(x,y){
         for (var i = 0; i < markers.length; i++) {
             var mark = markers[i];

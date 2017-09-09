@@ -40,12 +40,14 @@
 	border-radius: 12px;
 }
 #delBut{
+	width: 80px;
 	text-align: center;
 	border: 2px solid;
 	background-color: white;
 	border-radius: 12px;
 }
 #startBut{
+	width: 80px;
 	text-align: center;
 	border: 2px solid;
 	background-color: white;
