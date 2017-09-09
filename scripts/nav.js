@@ -48,18 +48,39 @@ let NAV = {
 		options.enableFavoritesAction = true;
 		let entry = NAV.buildRouteEntry(route, options);
 		let setter = $('<span>').addClass('setter');
-		let picture = $('<img>').addClass('picture');
+		let picture = $('<div>').addClass('picture');
 		let description = $('<div>').addClass('description');
 		let descriptionLabel= $('<div>').addClass('description-label');
+		let viewCanvas = document.createElement("canvas");
+
+	    viewCanvas.style.width='100%';
+	    viewCanvas.style.height='';
+	    viewCanvas.width=$('#photo')[0].clientWidth;
+	    viewCanvas.height=$('#photo')[0].clientHeight;
+		let context = viewCanvas.getContext('2d');
+
+	    DATABASE.loadMap(route.key).then((map) =>{
+	    	var img = new Image();
+	    	img.onload = function(){
+	    		console.log('Image src: '+map);
+				context.clearRect(0,0,viewCanvas.width,viewCanvas.height);
+	    		context.drawImage(img,0,0);
+	    	};
+	    	img.src = map;
+	    });
+
 
 		setter.text('Setter: ' + (route.setter || 'Unknown'));
-		picture.attr('src', 'assets/wall2.jpg');
 		picture.css({
-			width: 800,
-			height: 600
+			'background-image': 'url(../assets/wall2.jpg)',
+			'width': '100vw',
+    		'height': '',
+    		'background-size': '100vw auto',
+			'background-repeat': 'no-repeat'
 		});
 		description.text('Description: ' + (route.description || 'N/A'));
 
+		picture.append(viewCanvas);
 		container.append(entry);
 		container.append(setter);
 		container.append(picture);

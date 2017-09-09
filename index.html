@@ -106,8 +106,6 @@
 			<form >
 			Route Name: <input type="text" id ="routeName" placeholder="Route Name">
 			<br>
-			Setter Name: <input type="text" id="setter" placeholder="Your Name">
-			<br>
 			Grade: <input type="number" id="grade" min="0" max="8" placeholder ="0">
 			<br>
 			Description: <textarea id="description" rows="4" cols="50"></textarea>
@@ -141,7 +139,10 @@
 		</div>
 
 		<!-- Specific route view -->
-		<div class='page' id='route'></div>
+		<div class='page' id='route'>
+			<br>
+			<canvas id="viewCanvas" width='300' height='500'></canvas>
+		</div>
 	</div>
 </body>
 
