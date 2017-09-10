@@ -46,6 +46,7 @@ let NAV = {
 
 		let options = {};
 		options.enableFavoritesAction = true;
+		options.enableDeleteAction = true;
 		let entry = NAV.buildRouteEntry(route, options);
 		let setter = $('<span>').addClass('setter');
 		let picture = $('<div>').addClass('picture');
@@ -62,7 +63,6 @@ let NAV = {
 	    DATABASE.loadMap(route.key).then((map) =>{
 	    	var img = new Image();
 	    	img.onload = function(){
-	    		console.log('Image src: '+map);
 				context.clearRect(0,0,viewCanvas.width,viewCanvas.height);
 	    		context.drawImage(img,0,0);
 	    	};
@@ -85,6 +85,7 @@ let NAV = {
 		container.append(setter);
 		container.append(picture);
 		container.append(description);
+
 	},
 
 	buildRouteEntry: (route, options) => {
@@ -93,6 +94,7 @@ let NAV = {
 		let entry = $('<div>').addClass('entry');
 		let grade = $('<div>').addClass('grade');
 		let name = $('<span>').addClass('name');
+		let delIcon = $('<i>').addClass('fa fa-trash');
 		let favorites = $('<span>').addClass('favorites');
 		let favoritesIcon = $('<i>').addClass('fa fa-heart');
 
@@ -102,6 +104,9 @@ let NAV = {
 
 		entry.append(grade);
 		entry.append(name);
+		if(route.setter==LOGIN.name){
+			entry.append(delIcon);
+		}
 		entry.append(favorites);
 		entry.append(favoritesIcon);
 
@@ -109,6 +114,11 @@ let NAV = {
 		if (options.enableFavoritesAction) {
 			favoritesIcon.click(function() {
 				$(this).toggleClass('favorited');
+			});
+		}
+		if(options.enableDeleteAction){
+			delIcon.click(function() {
+				DATABASE.delete(route);
 			});
 		}
 

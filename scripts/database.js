@@ -35,6 +35,18 @@ let DATABASE = {
         }
     },
 
+    delete: function(route){
+        if(confirm("Delete "+route.name+"?")){
+            DATABASE.db.ref('routes/'+route.key).remove();
+            DATABASE.db.ref('routeMaps/'+route.key).remove();
+            var index = LOADER.routes.indexOf(route);
+            if(index > -1){
+                LOADER.routes.splice(index,1);
+            }
+            NAV.transition('#menu');
+        }
+    },
+
     loadMap: function(key){
         return new Promise((resolve, reject) =>{
             DATABASE.db.ref('/routeMaps/'+key+'/map').once('value').then(function(snapshot){
