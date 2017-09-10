@@ -12,6 +12,9 @@ let NAV = {
 	// Routes in view at the moment
 	routes: [],
 
+	// markers for creation view
+	markers: [],
+
 	// Grade filters
 	filters: LOADER.loadFilter(),
 
@@ -230,6 +233,7 @@ let NAV = {
 				// Go to creation view
 				// clear
 				$('#canvas')[0].getContext('2d').clearRect(0,0,$('#canvas')[0].width,$('#canvas')[0].height);
+				NAV.markers=[];
 				NAV.transition('#create-route');
 			});
 		} else if (selector == '#routes') {
