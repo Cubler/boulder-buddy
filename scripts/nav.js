@@ -62,14 +62,14 @@ let NAV = {
 		viewCanvas.height=viewCanvas.width/LOADER.wallAspect;
 		let context = viewCanvas.getContext('2d');
 
-	    DATABASE.loadMap(route.key).then((map) =>{
-	    	var img = new Image();
-	    	img.onload = function(){
+		DATABASE.loadMap(route.key).then((map) =>{
+			var img = new Image();
+			img.onload = function(){
 				context.clearRect(0,0,viewCanvas.width,viewCanvas.height);
-	    		context.drawImage(img,0,0);
-	    	};
-	    	img.src = map;
-	    });
+				context.drawImage(img,0,0);
+			};
+			img.src = map;
+		});
 
 
 		setter.text('Setter: ' + (route.setter || 'Unknown'));
