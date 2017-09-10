@@ -37,8 +37,7 @@ $(document).ready(() => {
 
 	// Load routes from firebase
 	LOADER.loadRoutes().then((routes) => {
-		LOADER.routes=routes;
+		LOADER.routes = routes;
 		LOGIN.verify();
-		// NAV.transition('#menu');	
 	});
 });

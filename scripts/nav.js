@@ -56,11 +56,10 @@ let NAV = {
 		let description = $('<div>').addClass('description');
 		let descriptionLabel= $('<div>').addClass('description-label');
 		let viewCanvas = document.createElement("canvas");
-
-	    viewCanvas.style.width='100%';
-	    viewCanvas.style.height='';
-	    viewCanvas.width=$('#photo')[0].clientWidth;
-	    viewCanvas.height=viewCanvas.width/LOADER.wallAspect;
+		viewCanvas.style.width='100%';
+		viewCanvas.style.height='';
+		viewCanvas.width=$('#photo')[0].clientWidth;
+		viewCanvas.height=viewCanvas.width/LOADER.wallAspect;
 		let context = viewCanvas.getContext('2d');
 
 	    DATABASE.loadMap(route.key).then((map) =>{
@@ -77,8 +76,8 @@ let NAV = {
 		picture.css({
 			'background-image': 'url(../assets/wall2.jpg)',
 			'width': '100vw',
-    		'height': '100%',
-    		'background-size': '100vw auto',
+			'height': '100%',
+			'background-size': '100vw auto',
 			'background-repeat': 'no-repeat'
 		});
 		description.text('Description: ' + (route.description || 'N/A'));
