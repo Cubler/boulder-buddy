@@ -74,7 +74,7 @@ let NAV = {
 
 		setter.text('Setter: ' + (route.setter || 'Unknown'));
 		picture.css({
-			'background-image': 'url(../assets/wall2.jpg)',
+			'background-image': 'url(../assets/cave.jpg)',
 			'width': '100vw',
 			'height': '100%',
 			'background-size': '100vw auto',
@@ -129,9 +129,11 @@ let NAV = {
 				// Update favorited status
 				if (hasFavorited) {
 					route.favorites[LOGIN.userID] = true;
+					DATABASE.favorite(route, LOGIN.userID);
 					numFavorites++;
 				} else {
 					delete route.favorites[LOGIN.userID];
+					DATABASE.unfavorite(route, LOGIN.userID);
 					numFavorites--;
 				}
 
@@ -369,7 +371,7 @@ $(document).ready(() => {
 		} else if (id == 'my-routes') {
 			// Show routes created by logged-in user
 			let filtered = routes.filter((route) => {
-				return route.userID == LOGIN.userID;
+				return route.setterID == LOGIN.userID;
 			});
 			NAV.populateRoutes(filtered);
 		} else {

@@ -58,6 +58,13 @@ let DATABASE = {
 
     },
 
+    favorite: function(route, userID){
+    	DATABASE.db.ref('routes/'+route['key']+'/favorites/'+userID).set('true');
+    },
+
+    unfavorite: function(route, userID){
+    	DATABASE.db.ref('routes/'+route['key']+'/favorites/'+userID).remove();
+
     loadAllRoutes: function(resolve){
 
         DATABASE.db.ref("routes").once('value').then(function(snapshot){
@@ -69,7 +76,8 @@ let DATABASE = {
                     setter: routesInfo[key]['setterName'],
                     setterID: routesInfo[key]['setterID'],
                     grade: routesInfo[key]['grade'],
-                    description: routesInfo[key]['description']
+                    description: routesInfo[key]['description'],
+                    favorites: routesInfo[key]['favorites'] || {}
                 });
             }
             resolve(DATABASE.routes);
