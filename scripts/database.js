@@ -25,12 +25,13 @@ let DATABASE = {
                 setterName: LOGIN.name,
                 setterID: LOGIN.userID,
                 grade: "V"+jQuery('#grade').val(),
-                description: jQuery('description').text()
+                description: jQuery('description').text(),
+                favorites: {}
             };
             pushed.set(entry);
             LOADER.routes.push(entry);
             DATABASE.db.ref('/routeMaps/'+pushed.getKey()).set({
-                map: canvas.toDataURL()
+                map: canvas.toDataURL('image/png')
             })
         }
     },
@@ -64,6 +65,7 @@ let DATABASE = {
 
     unfavorite: function(route, userID){
     	DATABASE.db.ref('routes/'+route['key']+'/favorites/'+userID).remove();
+    },
 
     loadAllRoutes: function(resolve){
 

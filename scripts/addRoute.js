@@ -5,7 +5,7 @@ $(document).ready(function (){
     canvas.style.width='100%';
     canvas.style.height='';
     canvas.width=$('#photo')[0].clientWidth;
-    canvas.height=canvas.width/LOADER.wallAspect;
+    canvas.height=canvas.width/LOADER.caveAspect;
     var PORTRAITWIDTH = 0;
     var PORTRAITHEIGHT = 0;
     var LANDSCAPEWIDTH = 0;
@@ -13,10 +13,10 @@ $(document).ready(function (){
     var BB = canvas.getBoundingClientRect();
     var offsetX = BB.left;
     var offsetY = BB.top;
-    var sButRadius = 5;
-    var mButRadius = 9;
-    var lButRadius = 13;
-    var markerWidth = 1;
+    var sButRadius = canvas.clientWidth*(0.014);
+    var mButRadius = canvas.clientWidth*(0.025);
+    var lButRadius = canvas.clientWidth*(0.036);
+    var markerWidth = canvas.clientWidth*(0.003);
     var smallBut = document.getElementById("smallBut");
     var medBut = document.getElementById("medBut");
     var larBut = document.getElementById("largeBut");
@@ -25,7 +25,7 @@ $(document).ready(function (){
     var timeout, longtouch
     var timeoutDuration = 300;
     var moved=false;
-    var hardCaliX=-5;
+    var hardCaliX=-canvas.offsetLeft;
     var hardCaliY=-2;
     
     // drag related variables
@@ -90,7 +90,6 @@ $(document).ready(function (){
     });
 
     // //Mobile Support mouse events
-
     canvas.addEventListener('touchstart', function (e){
 		jQuery("#chooseWindow").css({
             display: 'none'});
@@ -125,6 +124,22 @@ $(document).ready(function (){
         document.onselectstart = function() {return false;} // ie
     }
 
+    var butWidth = canvas.clientWidth*(0.1);
+    var fontSize = canvas.clientWidth*(0.015);
+    var buttonCSS={
+		'width': butWidth,
+		'font-size': fontSize,
+		'text-align': 'center',
+		'border': '2px solid',
+		'background-color': 'white',
+		'border-radius': '12px'
+    }
+    // set button display based on screen resolution
+    $('#smallBut').css(buttonCSS);
+	$('#medBut').css(buttonCSS);    
+	$('#largeBut').css(buttonCSS);
+	$('#delBut').css(buttonCSS);
+	$('#startBut').css(buttonCSS);
 
     $('#smallBut').on("touchstart" , function (e){
         add(canvasclkX,canvasclkY,sButRadius);

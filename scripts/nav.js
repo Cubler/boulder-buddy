@@ -63,14 +63,14 @@ let NAV = {
 		viewCanvas.style.width='100%';
 		viewCanvas.style.height='';
 		viewCanvas.width=$('#photo')[0].clientWidth;
-		viewCanvas.height=viewCanvas.width/LOADER.wallAspect;
+		viewCanvas.height=viewCanvas.width/LOADER.caveAspect;
 		let context = viewCanvas.getContext('2d');
 
 		DATABASE.loadMap(route.key).then((map) =>{
 			var img = new Image();
 			img.onload = function(){
 				context.clearRect(0,0,viewCanvas.width,viewCanvas.height);
-				context.drawImage(img,0,0);
+				context.drawImage(img,0,0,viewCanvas.width,viewCanvas.height);
 			};
 			img.src = map;
 		});
