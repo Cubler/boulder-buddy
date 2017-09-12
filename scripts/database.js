@@ -64,7 +64,8 @@ let DATABASE = {
 
     unfavorite: function(route, userID){
     	DATABASE.db.ref('routes/'+route['key']+'/favorites/'+userID).remove();
-
+    },
+    
     loadAllRoutes: function(resolve){
 
         DATABASE.db.ref("routes").once('value').then(function(snapshot){

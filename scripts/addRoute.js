@@ -5,7 +5,7 @@ $(document).ready(function (){
     canvas.style.width='100%';
     canvas.style.height='';
     canvas.width=$('#photo')[0].clientWidth;
-    canvas.height=canvas.width/LOADER.wallAspect;
+    canvas.height=canvas.width/LOADER.caveAspect;
     var PORTRAITWIDTH = 0;
     var PORTRAITHEIGHT = 0;
     var LANDSCAPEWIDTH = 0;
@@ -90,7 +90,6 @@ $(document).ready(function (){
     });
 
     // //Mobile Support mouse events
-
     canvas.addEventListener('touchstart', function (e){
 		jQuery("#chooseWindow").css({
             display: 'none'});
