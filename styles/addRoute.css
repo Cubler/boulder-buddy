@@ -1,5 +1,9 @@
 #photo{
+<<<<<<< HEAD
 	background-image: url("../assets/cave.jpg");
+=======
+	background-image: url("../assets/wall2.jpg");
+>>>>>>> parent of fe35121... edit so no favorites when route is created and switched to cave2
     width: 100vw;
     height: 100%;
     background-size: 100vw auto;
