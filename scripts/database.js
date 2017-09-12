@@ -25,7 +25,7 @@ let DATABASE = {
                 setterName: LOGIN.name,
                 setterID: LOGIN.userID,
                 grade: "V"+jQuery('#grade').val(),
-                description: jQuery('description').text(),
+                description: jQuery('description').text()
             };
             pushed.set(entry);
             LOADER.routes.push(entry);
