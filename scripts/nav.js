@@ -66,7 +66,7 @@ let NAV = {
 			var img = new Image();
 			img.onload = function(){
 				context.clearRect(0,0,viewCanvas.width,viewCanvas.height);
-				context.drawImage(img,0,0);
+				context.drawImage(img,0,0,viewCanvas.width,viewCanvas.height);
 			};
 			img.src = map;
 		});
