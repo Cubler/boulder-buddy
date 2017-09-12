@@ -25,7 +25,8 @@ let DATABASE = {
                 setterName: LOGIN.name,
                 setterID: LOGIN.userID,
                 grade: "V"+jQuery('#grade').val(),
-                description: jQuery('description').text()
+                description: jQuery('description').text(),
+                favorites: '0'
             };
             pushed.set(entry);
             LOADER.routes.push(entry);
@@ -58,6 +59,14 @@ let DATABASE = {
 
     },
 
+    favorite: function(route, userID){
+    	DATABASE.db.ref('routes/'+route['key']+'/favorites/'+userID).set('true');
+    },
+
+    unfavorite: function(route, userID){
+    	DATABASE.db.ref('routes/'+route['key']+'/favorites/'+userID).set('false');
+    },
+
     loadAllRoutes: function(resolve){
 
         DATABASE.db.ref("routes").once('value').then(function(snapshot){
@@ -69,7 +78,8 @@ let DATABASE = {
                     setter: routesInfo[key]['setterName'],
                     setterID: routesInfo[key]['setterID'],
                     grade: routesInfo[key]['grade'],
-                    description: routesInfo[key]['description']
+                    description: routesInfo[key]['description'],
+                    favorites: routesInfo[key]['favorites']
                 });
             }
             resolve(DATABASE.routes);
