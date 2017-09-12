@@ -12,29 +12,67 @@ firebase.initializeApp(config);
 let DATABASE = {
 
     db: firebase.database(),
+    routes: [],
 
     save: function(){
         var pushed = DATABASE.db.ref('/routes').push();
-        pushed.set({
-            name: jQuery('#routeName').val(),
-            setter: jQuery('#setter').val(),
-            grade: jQuery('#grade').val(),
-            description: jQuery('description').text()
-
-        });
-        DATABASE.db.ref('/routeMaps/'+pushed.getKey()).set({
-            map: canvas.toDataURL()
-        })
+        if(jQuery('#routeName').val()==null || jQuery('#grade').val()==null){
+            alert("Please Fill out information");
+        }else {
+            entry={
+                key: pushed.getKey(),
+                name: jQuery('#routeName').val(),
+                setterName: LOGIN.name,
+                setterID: LOGIN.userID,
+                grade: "V"+jQuery('#grade').val(),
+                description: jQuery('description').text()
+            };
+            pushed.set(entry);
+            LOADER.routes.push(entry);
+            DATABASE.db.ref('/routeMaps/'+pushed.getKey()).set({
+                map: canvas.toDataURL()
+            })
+        }
     },
 
-    loadImage: function(context, key){
-        
-        DATABASE.db.ref('/routes/'+key).once('value').then(function(snapshot){
-            var image = new Image();
-            image.onload = function(){
-                context.drawImage(image,0,0);
+    delete: function(route){
+        if(confirm("Delete "+route.name+"?")){
+            DATABASE.db.ref('routes/'+route.key).remove();
+            DATABASE.db.ref('routeMaps/'+route.key).remove();
+            var index = LOADER.routes.indexOf(route);
+            if(index > -1){
+                LOADER.routes.splice(index,1);
             }
-            image.src = snapshot.val();
+            NAV.transition('#menu');
+        }
+    },
+
+    loadMap: function(key){
+        return new Promise((resolve, reject) =>{
+            DATABASE.db.ref('/routeMaps/'+key+'/map').once('value').then(function(snapshot){
+                map = snapshot.val();
+                resolve(map);
+            });    
+            
+        });
+
+    },
+
+    loadAllRoutes: function(resolve){
+
+        DATABASE.db.ref("routes").once('value').then(function(snapshot){
+            routesInfo = snapshot.val();
+            for(var key in routesInfo){
+                DATABASE.routes.push({
+                    key: routesInfo[key]['key'],
+                    name: routesInfo[key]['name'],
+                    setter: routesInfo[key]['setterName'],
+                    setterID: routesInfo[key]['setterID'],
+                    grade: routesInfo[key]['grade'],
+                    description: routesInfo[key]['description']
+                });
+            }
+            resolve(DATABASE.routes);
         });
     }
 }

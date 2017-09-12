@@ -5,7 +5,7 @@ $(document).ready(function (){
     canvas.style.width='100%';
     canvas.style.height='';
     canvas.width=$('#photo')[0].clientWidth;
-    canvas.height=$('#photo')[0].clientHeight;
+    canvas.height=canvas.width/LOADER.wallAspect;
     var PORTRAITWIDTH = 0;
     var PORTRAITHEIGHT = 0;
     var LANDSCAPEWIDTH = 0;
@@ -39,7 +39,7 @@ $(document).ready(function (){
     var canvasclkY=0;
 
     // an array of objects that define different rectangles
-    var markers = [];
+    NAV.markers = [];
 
     //set up orientation heights and widths
     var defaultOrientation = window.screen.orientation.type;
@@ -163,8 +163,8 @@ $(document).ready(function (){
 
     function draw() {
         clear();
-        for (var i = 0; i < markers.length; i++) {
-            var mark = markers[i];
+        for (var i = 0; i < NAV.markers.length; i++) {
+            var mark = NAV.markers[i];
             makeMarker(mark.x, mark.y, mark.r, mark.c);
         }
     }
@@ -185,8 +185,8 @@ $(document).ready(function (){
 
         // test each rect to see if mouse is inside
         dragok = false;
-        for (var i = 0; i < markers.length; i++) {
-            var mark = markers[i];
+        for (var i = 0; i < NAV.markers.length; i++) {
+            var mark = NAV.markers[i];
             if (mx > mark.x - mark.r && mx < mark.x + mark.r && my > mark.y - mark.r && my < mark.y + mark.r) {
                 // if yes, set that rects isDragging=true
                 dragok = true;
@@ -207,8 +207,8 @@ $(document).ready(function (){
 
         // clear all the dragging flags
         dragok = false;
-        for (var i = 0; i < markers.length; i++) {
-            markers[i].isDragging = false;
+        for (var i = 0; i < NAV.markers.length; i++) {
+            NAV.markers[i].isDragging = false;
         }
     }
 
@@ -236,8 +236,8 @@ $(document).ready(function (){
             // move each rect that isDragging 
             // by the distance the mouse has moved
             // since the last mousemove
-            for (var i = 0; i < markers.length; i++) {
-                var mark = markers[i];
+            for (var i = 0; i < NAV.markers.length; i++) {
+                var mark = NAV.markers[i];
                 if (mark.isDragging) {
                     mark.x += dx;
                     mark.y += dy;
@@ -255,7 +255,7 @@ $(document).ready(function (){
     }
     //Adds a new marker
     function add(x, y, r){
-        markers.push({
+        NAV.markers.push({
             x: x,
             y: y,
             r: r,
@@ -268,10 +268,10 @@ $(document).ready(function (){
 
     }
     function del(){
-        for (var i = 0; i < markers.length; i++) {
-            var mark = markers[i];
+        for (var i = 0; i < NAV.markers.length; i++) {
+            var mark = NAV.markers[i];
             if (canvasclkX > mark.x - mark.r && canvasclkX < mark.x + mark.r && canvasclkY > mark.y - mark.r && canvasclkY < mark.y + mark.r) {
-                markers.splice(i,1);
+                NAV.markers.splice(i,1);
             }
         }
         draw();
@@ -306,8 +306,8 @@ $(document).ready(function (){
             left: w});
     }
     function makeStartHold(){
-        for (var i = 0; i < markers.length; i++) {
-            var mark = markers[i];
+        for (var i = 0; i < NAV.markers.length; i++) {
+            var mark = NAV.markers[i];
             if (canvasclkX > mark.x - mark.r && canvasclkX < mark.x + mark.r && canvasclkY > mark.y - mark.r && canvasclkY < mark.y + mark.r) {
                 if(mark.c==0){
                     mark.c=1;
@@ -369,8 +369,8 @@ $(document).ready(function (){
 
 
     function detectMarksAt(x,y){
-        for (var i = 0; i < markers.length; i++) {
-            var mark = markers[i];
+        for (var i = 0; i < NAV.markers.length; i++) {
+            var mark = NAV.markers[i];
             if (canvasclkX > mark.x - mark.r && canvasclkX < mark.x + mark.r && canvasclkY > mark.y - mark.r && canvasclkY < mark.y + mark.r) {
                 return true;
             }

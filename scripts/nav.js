@@ -12,6 +12,9 @@ let NAV = {
 	// Routes in view at the moment
 	routes: [],
 
+	// markers for creation view
+	markers: [],
+
 	// Grade filters
 	filters: LOADER.loadFilter(),
 
@@ -46,24 +49,45 @@ let NAV = {
 
 		let options = {};
 		options.enableFavoritesAction = true;
+		options.enableDeleteAction = true;
 		let entry = NAV.buildRouteEntry(route, options);
 		let setter = $('<span>').addClass('setter');
-		let picture = $('<img>').addClass('picture');
+		let picture = $('<div>').addClass('picture');
 		let description = $('<div>').addClass('description');
 		let descriptionLabel= $('<div>').addClass('description-label');
+		let viewCanvas = document.createElement("canvas");
+		viewCanvas.style.width='100%';
+		viewCanvas.style.height='';
+		viewCanvas.width=$('#photo')[0].clientWidth;
+		viewCanvas.height=viewCanvas.width/LOADER.wallAspect;
+		let context = viewCanvas.getContext('2d');
+
+		DATABASE.loadMap(route.key).then((map) =>{
+			var img = new Image();
+			img.onload = function(){
+				context.clearRect(0,0,viewCanvas.width,viewCanvas.height);
+				context.drawImage(img,0,0);
+			};
+			img.src = map;
+		});
+
 
 		setter.text('Setter: ' + (route.setter || 'Unknown'));
-		picture.attr('src', 'assets/wall2.jpg');
 		picture.css({
-			width: 800,
-			height: 600
+			'background-image': 'url(../assets/wall2.jpg)',
+			'width': '100vw',
+			'height': '100%',
+			'background-size': '100vw auto',
+			'background-repeat': 'no-repeat'
 		});
 		description.text('Description: ' + (route.description || 'N/A'));
 
+		picture.append(viewCanvas);
 		container.append(entry);
 		container.append(setter);
 		container.append(picture);
 		container.append(description);
+
 	},
 
 	buildRouteEntry: (route, options) => {
@@ -72,6 +96,7 @@ let NAV = {
 		let entry = $('<div>').addClass('entry');
 		let grade = $('<div>').addClass('grade');
 		let name = $('<span>').addClass('name');
+		let delIcon = $('<i>').addClass('fa fa-trash');
 		let favorites = $('<span>').addClass('favorites');
 		let favoritesIcon = $('<i>').addClass('fa fa-heart');
 
@@ -89,6 +114,9 @@ let NAV = {
 
 		entry.append(grade);
 		entry.append(name);
+		if(route.setter==LOGIN.name){
+			entry.append(delIcon);
+		}
 		entry.append(favorites);
 		entry.append(favoritesIcon);
 
@@ -108,6 +136,11 @@ let NAV = {
 				}
 
 				favorites.text(numFavorites);
+			});
+		}
+		if(options.enableDeleteAction){
+			delIcon.click(function() {
+				DATABASE.delete(route);
 			});
 		}
 
@@ -225,6 +258,7 @@ let NAV = {
 				// Go to creation view
 				// clear
 				$('#canvas')[0].getContext('2d').clearRect(0,0,$('#canvas')[0].width,$('#canvas')[0].height);
+				NAV.markers=[];
 				NAV.transition('#create-route');
 			});
 		} else if (selector == '#routes') {
