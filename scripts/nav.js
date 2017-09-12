@@ -43,6 +43,10 @@ let NAV = {
 		}
 	},
 
+	refreshRoutes: () => {
+		NAV.populateRoutes(NAV.routes);
+	},
+
 	populateRoute: (route) => {
 		let container = $('#route');
 		container.html('');
@@ -396,6 +400,9 @@ $(document).ready(() => {
 			return;
 		}
 
+		// Refresh list of routes
+		NAV.refreshRoutes();
+
 		let last = NAV.stack.slice(-2)[0];
 		let options = {};
 		options.back = true;
@@ -410,6 +417,6 @@ $(document).ready(() => {
 		NAV.filters[grade] = ! NAV.filters[grade];
 
 		// Refresh list of routes
-		NAV.populateRoutes(NAV.routes);
+		NAV.refreshRoutes();
 	});
 });
