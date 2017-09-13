@@ -38,6 +38,11 @@ $(document).ready(() => {
 	// Load routes from firebase
 	LOADER.loadRoutes().then((routes) => {
 		LOADER.routes = routes;
+
+		// Uncomment this line to bypass facebook login
+		//LOGIN.bypass();
+
+		// Verify using facebook login
 		LOGIN.verify();
 	});
 });

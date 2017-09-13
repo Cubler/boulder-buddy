@@ -12,6 +12,11 @@ let NAV = {
 	// Routes in view at the moment
 	routes: [],
 
+	// Current route of a single-route view.
+	// Stored so that a user can take actions
+	// on a route (e.g. edit/delete).
+	currentRoute: null,
+
 	// markers for creation view
 	markers: [],
 
@@ -53,7 +58,6 @@ let NAV = {
 
 		let options = {};
 		options.enableFavoritesAction = true;
-		options.enableDeleteAction = true;
 		let entry = NAV.buildRouteEntry(route, options);
 		let setter = $('<span>').addClass('setter');
 		let picture = $('<div>').addClass('picture');
@@ -92,6 +96,9 @@ let NAV = {
 		container.append(picture);
 		container.append(description);
 
+		// Store reference to route so user can
+		// take action upon it (e.g. edit/delete).
+		NAV.currentRoute = route;
 	},
 
 	buildRouteEntry: (route, options) => {
@@ -100,7 +107,6 @@ let NAV = {
 		let entry = $('<div>').addClass('entry');
 		let grade = $('<div>').addClass('grade');
 		let name = $('<span>').addClass('name');
-		let delIcon = $('<i>').addClass('fa fa-trash');
 		let favorites = $('<span>').addClass('favorites');
 		let favoritesIcon = $('<i>').addClass('fa fa-heart');
 
@@ -118,9 +124,6 @@ let NAV = {
 
 		entry.append(grade);
 		entry.append(name);
-		if(route.setter==LOGIN.name){
-			entry.append(delIcon);
-		}
 		entry.append(favorites);
 		entry.append(favoritesIcon);
 
@@ -142,11 +145,6 @@ let NAV = {
 				}
 
 				favorites.text(numFavorites);
-			});
-		}
-		if(options.enableDeleteAction){
-			delIcon.click(function() {
-				DATABASE.delete(route);
 			});
 		}
 
@@ -287,8 +285,18 @@ let NAV = {
 				DATABASE.save();
 				NAV.transition('#menu');
 			})
-		};
-
+		} else if (selector == '#route') {
+			// Only show route actions for the user
+			// that created the route.
+			let route = NAV.currentRoute;
+			if (route.setterID == LOGIN.userID) {
+				icons.push('fa-trash');
+				actions.push(() => {
+					// Delete currently viewed route
+					DATABASE.delete(route);
+				});
+			}
+		}
 
 		// Reveal new actions/icons
 		for (let i = 0; i < actions.length; i++) {
