@@ -15,7 +15,7 @@ let DATABASE = {
     routes: [],
 
     save: function(){
-        var test = jQuery('#gradeProject').is(":checked");
+
         if(jQuery('#routeName').val()=="" || (jQuery('#grade').val()==""
                 && !jQuery('#gradeProject').is(":checked"))){
             alert("Please Fill Out Information");
