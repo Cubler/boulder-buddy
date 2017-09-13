@@ -15,17 +15,32 @@ let DATABASE = {
     routes: [],
 
     save: function(){
-        var pushed = DATABASE.db.ref('/routes').push();
-        if(jQuery('#routeName').val()==null || jQuery('#grade').val()==null){
-            alert("Please Fill out information");
+        var test = jQuery('#gradeProject').is(":checked");
+        if(jQuery('#routeName').val()=="" || (jQuery('#grade').val()==""
+                && !jQuery('#gradeProject').is(":checked"))){
+            alert("Please Fill Out Information");
+        }else if(jQuery('#gradePlus').is(":checked") 
+                && jQuery('#gradeMinus').is(":checked")){
+            alert("Select Plus, Minus,or Neither");
         }else {
+            var pushed = DATABASE.db.ref('/routes').push();
+            // format grade for parsing
+            var gradeString; 
+            if(jQuery('#gradeProject').is(":checked")){
+                gradeString="VP";
+            }else{
+                var subGrade = jQuery('#gradePlus').is(":checked") ? "+" : 
+                    (jQuery('#gradeMinus').is(":checked") ? "-" : "");
+                gradeString="V"+jQuery('#grade').val() + subGrade;
+            }
+            // create database entry
             entry={
                 key: pushed.getKey(),
                 name: jQuery('#routeName').val(),
                 setterName: LOGIN.name,
                 setterID: LOGIN.userID,
-                grade: "V"+jQuery('#grade').val(),
-                description: jQuery('description').text(),
+                grade: gradeString,
+                description: jQuery('#description').text(),
                 favorites: {}
             };
             pushed.set(entry);
@@ -84,5 +99,6 @@ let DATABASE = {
             }
             resolve(DATABASE.routes);
         });
-    }
+    },
+
 }
