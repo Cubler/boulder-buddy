@@ -15,7 +15,15 @@ let DATABASE = {
     routes: [],
 
     save: function(){
-        var test = jQuery('#gradeProject').is(":checked");
+        
+        var gradeString; 
+        var creationWidth = $('#canvas')[0].clientWidth;
+        var creationHeight = $('#canvas')[0].clientHeight;
+        var markerMetaData = {
+            'creationWidth': creationWidth,
+            'creationHeight': creationHeight,
+            'markers': NAV.markers,
+        }
         if(jQuery('#routeName').val()=="" || (jQuery('#grade').val()==""
                 && !jQuery('#gradeProject').is(":checked"))){
             alert("Please Fill Out Information");
@@ -23,9 +31,18 @@ let DATABASE = {
                 && jQuery('#gradeMinus').is(":checked")){
             alert("Select Plus, Minus,or Neither");
         }else {
-            var pushed = DATABASE.db.ref('/routes').push();
+            var pushed, key
+            if(NAV.currentRoute == null){
+                pushed = DATABASE.db.ref('/routes').push();
+                key = pushed.getKey();
+            }else {
+                // Editing an existing route
+                key = NAV.currentRoute.key;
+                var index = LOADER.routes.indexOf(NAV.currentRoute);
+                LOADER.routes.splice(index,1);
+            }
+
             // format grade for parsing
-            var gradeString; 
             if(jQuery('#gradeProject').is(":checked")){
                 gradeString="VP";
             }else{
@@ -35,19 +52,21 @@ let DATABASE = {
             }
             // create database entry
             entry={
-                key: pushed.getKey(),
+                key: key,
                 name: jQuery('#routeName').val(),
                 setterName: LOGIN.name,
                 setterID: LOGIN.userID,
                 grade: gradeString,
-                description: jQuery('#description').text(),
-                favorites: {}
+                description: jQuery('#description').val(),
+                favorites: {},
+                markerMetaData: JSON.stringify(markerMetaData),
             };
-            pushed.set(entry);
+            DATABASE.db.ref('/routes/' + key).set(entry);
             LOADER.routes.push(entry);
-            DATABASE.db.ref('/routeMaps/'+pushed.getKey()).set({
+            NAV.refreshRoutes();
+            DATABASE.db.ref('/routeMaps/' + key).set({
                 map: canvas.toDataURL('image/png')
-            })
+            });
         }
     },
 
@@ -71,7 +90,6 @@ let DATABASE = {
             });    
             
         });
-
     },
 
     favorite: function(route, userID){
@@ -83,22 +101,21 @@ let DATABASE = {
     },
 
     loadAllRoutes: function(resolve){
-
         DATABASE.db.ref("routes").once('value').then(function(snapshot){
             routesInfo = snapshot.val();
             for(var key in routesInfo){
                 DATABASE.routes.push({
                     key: routesInfo[key]['key'],
                     name: routesInfo[key]['name'],
-                    setter: routesInfo[key]['setterName'],
+                    setterName: routesInfo[key]['setterName'],
                     setterID: routesInfo[key]['setterID'],
                     grade: routesInfo[key]['grade'],
                     description: routesInfo[key]['description'],
-                    favorites: routesInfo[key]['favorites'] || {}
+                    favorites: routesInfo[key]['favorites'] || {},
+                    markerMetaData: routesInfo[key]['markerMetaData'],
                 });
             }
             resolve(DATABASE.routes);
         });
     },
-
 }
