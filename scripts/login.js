@@ -2,6 +2,10 @@ let LOGIN = {
 	name: null,
 	userID: null,
 
+	// Used to bypass facebook login
+	BYPASS_NAME: 'Admin',
+	BYPASS_USERID: '69420',
+
 	// Handle race condition (database vs. Facebook API)
 	fbReady: false,
 
@@ -16,18 +20,12 @@ let LOGIN = {
 		}
 
 		FB.getLoginStatus((response) => {
-			let options = {};
-			options.reset = true;
-
 			if (response.status == 'connected') {
 				let userID = response.authResponse.userID;
 				let name = LOGIN.getName(userID);
 				name.then(($name) => {
-					LOGIN.name = $name;
-					LOGIN.userID = userID;
-					NAV.transition('#menu', options);
+					LOGIN.authenticate($name, userID);
 				});
-
 			} else {
 				NAV.transition('#login', options);
 			}
@@ -41,6 +39,21 @@ let LOGIN = {
 				resolve(response.name);
 			});
 		});
+	},
+
+	// Set authentication info and move to main menu
+	authenticate: (name, userID) => {
+		LOGIN.name = name;
+		LOGIN.userID = userID;
+
+		let options = {};
+		options.reset = true;
+		NAV.transition('#menu', options);
+	},
+
+	// Bypass facebook login
+	bypass: () => {
+		LOGIN.authenticate(LOGIN.BYPASS_NAME, LOGIN.BYPASS_USERID);
 	},
 };
 
