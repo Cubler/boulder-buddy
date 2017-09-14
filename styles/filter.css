@@ -1,18 +1,16 @@
 #filter {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-around;
 	margin-top: 0.2rem;
-	height: auto;
+	overflow-x: scroll;
+	text-align: center;
+	white-space: nowrap;
 	width: 100%;
 }
 
 #filter .grade {
+	display: inline-flex;
 	margin: 0;
-	max-width: 2.5rem;
-	max-height: 2.5rem;
-	height: 12.5vw;
-	width: 12.5vw;
+	height: 2.5rem;
+	width: 2.5rem;
 }
 
 #filter .grade.inactive {
