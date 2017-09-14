@@ -80,7 +80,7 @@ let NAV = {
 		});
 
 
-		setter.text('Setter: ' + (route.setter || 'Unknown'));
+		setter.text('Setter: ' + (route.setterName || 'Unknown'));
 		picture.css({
 			'background-image': 'url(../assets/cave.jpg)',
 			'width': '100vw',
@@ -335,7 +335,7 @@ let NAV = {
 
 			let isGradeMatch = route.grade.contains(string);
 			let isNameMatch = route.name.contains(string);
-			let isSetterMatch = route.setter.contains(string);
+			let isSetterMatch = route.setterName.contains(string);
 			let isDescriptionMatch = route.description.contains(string);
 
 			isMatch = isMatch || isGradeMatch;
