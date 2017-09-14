@@ -471,27 +471,27 @@ let NAV = {
 	},
 
 	draw: () => {
-        $('#canvas')[0].getContext('2d').clearRect(0,0,$('#canvas')[0].width,$('#canvas')[0].height);
-        for (var i = 0; i < NAV.markers.length; i++) {
-            var mark = NAV.markers[i];
-            NAV.makeMarker(mark.x, mark.y, mark.r, mark.c);
+		$('#canvas')[0].getContext('2d').clearRect(0,0,$('#canvas')[0].width,$('#canvas')[0].height);
+		for (var i = 0; i < NAV.markers.length; i++) {
+			var mark = NAV.markers[i];
+			NAV.makeMarker(mark.x, mark.y, mark.r, mark.c);
 		}
 	},
 
-    makeMarker: (x,y,r,c) => {
-    	var markerWidth =  $("#canvas").clientWidth*(0.003);
-        var ctx = $('#canvas')[0].getContext('2d');
-        ctx.beginPath();
-        ctx.lineWidth=markerWidth;
-        ctx.arc(x, y, r, 0, 2*Math.PI);
-        ctx.closePath();
-        if(c==0){
-            ctx.strokeStyle = 'rgba(255,0,0,1)';
-        }else {
-            ctx.strokeStyle = 'rgba(0,255,0,1)';
-        }
-        ctx.stroke();
-    },
+	makeMarker: (x,y,r,c) => {
+		var markerWidth =  $("#canvas").clientWidth*(0.003);
+		var ctx = $('#canvas')[0].getContext('2d');
+		ctx.beginPath();
+		ctx.lineWidth=markerWidth;
+		ctx.arc(x, y, r, 0, 2*Math.PI);
+		ctx.closePath();
+		if(c==0){
+			ctx.strokeStyle = 'rgba(255,0,0,1)';
+		}else {
+			ctx.strokeStyle = 'rgba(0,255,0,1)';
+		}
+		ctx.stroke();
+	},
 };
 
 // Setup
