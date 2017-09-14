@@ -344,7 +344,7 @@ let NAV = {
 
 			let isGradeMatch = route.grade.contains(string);
 			let isNameMatch = route.name.contains(string);
-			let isSetterMatch = route.setter.contains(string);
+			let isSetterMatch = route.setterName.contains(string);
 			let isDescriptionMatch = route.description.contains(string);
 
 			isMatch = isMatch || isGradeMatch;

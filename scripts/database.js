@@ -28,7 +28,7 @@ let DATABASE = {
         if(jQuery('#routeName').val()=="" || (jQuery('#grade').val()==""
                 && !jQuery('#gradeProject').is(":checked"))){
             alert("Please Fill Out Information");
-        }else if(jQuery('#gradePlus').is(":checked") 
+        }else if(jQuery('#gradePlus').is(":checked")
                 && jQuery('#gradeMinus').is(":checked")){
             alert("Select Plus, Minus,or Neither");
         }else {
@@ -44,10 +44,11 @@ let DATABASE = {
             }
 
             // format grade for parsing
+            var gradeString;
             if(jQuery('#gradeProject').is(":checked")){
                 gradeString="VP";
             }else{
-                var subGrade = jQuery('#gradePlus').is(":checked") ? "+" : 
+                var subGrade = jQuery('#gradePlus').is(":checked") ? "+" :
                     (jQuery('#gradeMinus').is(":checked") ? "-" : "");
                 gradeString="V"+jQuery('#grade').val() + subGrade;
             }
@@ -63,7 +64,7 @@ let DATABASE = {
                 markerMetaData: JSON.stringify(markerMetaData),
             };
             DATABASE.db.ref('/routes/' + key).set(entry);
-            LOADER.routes.push(entry);
+            LOADER.routes.unshift(entry);
             NAV.refreshRoutes();
             DATABASE.db.ref('/routeMaps/' + key).set({
                 map: canvas.toDataURL('image/png')
@@ -88,8 +89,8 @@ let DATABASE = {
             DATABASE.db.ref('/routeMaps/'+key+'/map').once('value').then(function(snapshot){
                 map = snapshot.val();
                 resolve(map);
-            });    
-            
+            });
+
         });
     },
 
@@ -105,7 +106,7 @@ let DATABASE = {
         DATABASE.db.ref("routes").once('value').then(function(snapshot){
             routesInfo = snapshot.val();
             for(var key in routesInfo){
-                DATABASE.routes.push({
+                DATABASE.routes.unshift({
                     key: routesInfo[key]['key'],
                     name: routesInfo[key]['name'],
                     setterName: routesInfo[key]['setterName'],
