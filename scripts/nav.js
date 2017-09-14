@@ -275,6 +275,7 @@ let NAV = {
 			icons.push('fa-floppy-o');
 			actions.push(() => {
 				// Go to save view
+				NAV.buildSaveForm();
 				NAV.transition('#save-route');
 			});
 		} else if (selector =='#save-route'){
@@ -361,6 +362,50 @@ let NAV = {
 		});
 
 		return filtered;
+	},
+
+	buildSaveForm: () => {
+		let container = $('#save-route');
+		container.html = "";
+		container.empty();
+
+		let formDiv = $('<form>').attr('id', 'formDiv');
+		let routeName = document.createElement("input");
+		routeName.type = "text";
+		routeName.id = "routeName";
+		routeName.placeholder = "Route Name";
+		let grade = document.createElement("input");
+		grade.type = "number";
+		grade.id = "grade";
+		grade.min = "0";
+		grade.max = "7";
+		grade.placeholder = "0";
+		let gradePlus = document.createElement("input");
+		gradePlus.type = "checkbox";
+		gradePlus.id = "gradePlus";
+		let gradeMinus = document.createElement("input");
+		gradeMinus.type = "checkbox";
+		gradeMinus.id = "gradeMinus";
+		let gradeProject = document.createElement("input");
+		gradeProject.type = "checkbox";
+		gradeProject.id = "gradeProject";
+		let description = document.createElement("textarea");
+		description.id = "description";
+		description.rows = 4;
+		description.cols = 50;
+
+		formDiv.append(document.createTextNode("Route Name: "))
+		formDiv.append(routeName);
+		formDiv.append(document.createElement("br"));
+		formDiv.append(document.createTextNode("Grade: "), grade)
+		formDiv.append(gradePlus, document.createTextNode("(+)"));
+		formDiv.append(gradeMinus, document.createTextNode("(-)"));
+		formDiv.append(document.createElement("br"));
+		formDiv.append(gradeProject, document.createTextNode("VProject"));
+		formDiv.append(document.createElement("br"));
+		formDiv.append(document.createTextNode("Description: "))
+		formDiv.append(document.createElement("br"), description)
+		container.append(formDiv);
 	},
 };
 
