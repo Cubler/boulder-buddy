@@ -80,7 +80,7 @@ let NAV = {
 		});
 
 
-		setter.text('Setter: ' + (route.setter || 'Unknown'));
+		setter.text('Setter: ' + (route.setterName || 'Unknown'));
 		picture.css({
 			'background-image': 'url(../assets/cave.jpg)',
 			'width': '100vw',
@@ -263,6 +263,7 @@ let NAV = {
 				// clear
 				$('#canvas')[0].getContext('2d').clearRect(0,0,$('#canvas')[0].width,$('#canvas')[0].height);
 				NAV.markers=[];
+				NAV.currentRoute = null;
 				NAV.transition('#create-route');
 			});
 		} else if (selector == '#routes') {
@@ -272,9 +273,15 @@ let NAV = {
 				NAV.transition('#search');
 			});
 		} else if (selector == '#create-route') {
-			icons.push('fa-floppy-o');
+
+			icons.push('fa-trash');
 			actions.push(() => {
-				// Go to save view
+				// Delete currently viewed route
+				DATABASE.delete();
+			});
+			icons.push('fa-floppy-o');
+			actions.push(()=> {
+				// Save the Route to database and go to menu view
 				NAV.buildSaveForm();
 				NAV.transition('#save-route');
 			});
@@ -290,10 +297,12 @@ let NAV = {
 			// that created the route.
 			let route = NAV.currentRoute;
 			if (route.setterID == LOGIN.userID) {
-				icons.push('fa-trash');
+				icons.push('fa-pencil');
 				actions.push(() => {
 					// Delete currently viewed route
-					DATABASE.delete(route);
+					NAV.loadEditMetaData();
+					NAV.draw();
+					NAV.transition('#create-route');
 				});
 			}
 		}
@@ -365,6 +374,9 @@ let NAV = {
 	},
 
 	buildSaveForm: () => {
+
+		let gradeValue,routeNameValue, subGrade, gradeProjectValue, descriptionValue;
+
 		let container = $('#save-route');
 		container.html = "";
 		container.empty();
@@ -373,13 +385,11 @@ let NAV = {
 		let routeName = document.createElement("input");
 		routeName.type = "text";
 		routeName.id = "routeName";
-		routeName.placeholder = "Route Name";
 		let grade = document.createElement("input");
 		grade.type = "number";
 		grade.id = "grade";
 		grade.min = "0";
 		grade.max = "7";
-		grade.placeholder = "0";
 		let gradePlus = document.createElement("input");
 		gradePlus.type = "checkbox";
 		gradePlus.id = "gradePlus";
@@ -394,6 +404,27 @@ let NAV = {
 		description.rows = 4;
 		description.cols = 50;
 
+		if(NAV.currentRoute != null){
+			let route = NAV.currentRoute;
+			routeName.value = route.name;
+			[gradeValue, subGrade, gradeProjectValue] = NAV.parseGradeString(route.grade);
+			grade.value = gradeValue;
+			if(subGrade=="+"){
+				gradePlus.checked = true;
+			}else if(subGrade=="-"){
+				gradeMinus.checked = true;
+			}else if(subGrade == null){
+				gradeProject.checked = true;
+			}	
+			description.value = route.description;
+		}else {
+			routeName.placeholder = "Route Name";
+			grade.placeholder = "0";
+			gradePlus.checked = false;
+			gradeMinus.checked = false;
+			gradeProject.checked = false;
+		}
+
 		formDiv.append(document.createTextNode("Route Name: "))
 		formDiv.append(routeName);
 		formDiv.append(document.createElement("br"));
@@ -406,6 +437,60 @@ let NAV = {
 		formDiv.append(document.createTextNode("Description: "))
 		formDiv.append(document.createElement("br"), description)
 		container.append(formDiv);
+	},
+
+	// return in form gradeNum, subGrade = {+, null, -}, vProject = {true, false}
+	parseGradeString: (gradeString) => {
+		if(gradeString=='VP'){
+			return [null, null, true];
+		}else if(gradeString.length==3){
+			return [gradeString[1], gradeString[2], false];
+		}else{
+			return [gradeString[1], null, false];
+		}
+	},
+
+	loadEditMetaData: () => {
+		var metaObj = JSON.parse(NAV.currentRoute['markerMetaData']);
+		// Scale Markers for current resolution
+		var creationWidth = metaObj['creationWidth'];
+		var creationHeight = metaObj['creationHeight'];
+		var currentWidth = $('#canvas')[0].clientWidth;
+		var currentHeight = $('#canvas')[0].clientHeight;
+		
+		var widthRatio = currentWidth / creationWidth;
+		var heightRatio = currentHeight / creationHeight;
+		var markers = metaObj['markers'];
+
+		for (var i = 0; i < markers.length; i++){
+			markers[i]['x'] = markers[i]['x'] * widthRatio;
+			markers[i]['y'] = markers[i]['y'] * heightRatio;
+			markers[i]['r'] = markers[i]['r'] * widthRatio;
+		}
+		NAV.markers = markers;
+	},
+
+	draw: () => {
+		$('#canvas')[0].getContext('2d').clearRect(0,0,$('#canvas')[0].width,$('#canvas')[0].height);
+		for (var i = 0; i < NAV.markers.length; i++) {
+			var mark = NAV.markers[i];
+			NAV.makeMarker(mark.x, mark.y, mark.r, mark.c);
+		}
+	},
+
+	makeMarker: (x,y,r,c) => {
+		var markerWidth =  $("#canvas").clientWidth*(0.003);
+		var ctx = $('#canvas')[0].getContext('2d');
+		ctx.beginPath();
+		ctx.lineWidth=markerWidth;
+		ctx.arc(x, y, r, 0, 2*Math.PI);
+		ctx.closePath();
+		if(c==0){
+			ctx.strokeStyle = 'rgba(255,0,0,1)';
+		}else {
+			ctx.strokeStyle = 'rgba(0,255,0,1)';
+		}
+		ctx.stroke();
 	},
 };
 
