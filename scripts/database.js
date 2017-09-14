@@ -24,6 +24,7 @@ let DATABASE = {
             'creationHeight': creationHeight,
             'markers': NAV.markers,
         }
+
         if(jQuery('#routeName').val()=="" || (jQuery('#grade').val()==""
                 && !jQuery('#gradeProject').is(":checked"))){
             alert("Please Fill Out Information");
