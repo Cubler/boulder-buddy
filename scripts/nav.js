@@ -455,6 +455,11 @@ $(document).ready(() => {
 
 		// Refresh list of routes
 		NAV.refreshRoutes();
+		let current = NAV.stack.slice(-1)[0];
+		if(current == "#create-route" && NAV.markers.length != 0
+			&& !confirm("Backing will erase route creation progress.")){
+				return;
+		}
 
 		let last = NAV.stack.slice(-2)[0];
 		let options = {};
