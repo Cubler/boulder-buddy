@@ -467,9 +467,7 @@ let NAV = {
 			markers[i]['y'] = markers[i]['y'] * heightRatio;
 			markers[i]['r'] = markers[i]['r'] * widthRatio;
 		}
-
 		NAV.markers = markers;
-
 	},
 
 	draw: () => {
@@ -477,8 +475,8 @@ let NAV = {
         for (var i = 0; i < NAV.markers.length; i++) {
             var mark = NAV.markers[i];
             NAV.makeMarker(mark.x, mark.y, mark.r, mark.c);
-        }
-    },
+    	}
+	},
 
     makeMarker: (x,y,r,c) => {
     	var markerWidth =  $("#canvas").clientWidth*(0.003);
