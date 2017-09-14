@@ -475,7 +475,7 @@ let NAV = {
         for (var i = 0; i < NAV.markers.length; i++) {
             var mark = NAV.markers[i];
             NAV.makeMarker(mark.x, mark.y, mark.r, mark.c);
-    	}
+		}
 	},
 
     makeMarker: (x,y,r,c) => {
