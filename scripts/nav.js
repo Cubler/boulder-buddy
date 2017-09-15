@@ -288,9 +288,8 @@ let NAV = {
 		} else if (selector =='#save-route'){
 			icons.push('fa-floppy-o');
 			actions.push(()=> {
-				// Save the Route to database and go to menu view
+				// Save the Route to database
 				DATABASE.save();
-				NAV.transition('#menu');
 			})
 		} else if (selector == '#route') {
 			// Only show route actions for the user
@@ -388,8 +387,6 @@ let NAV = {
 		let grade = document.createElement("input");
 		grade.type = "number";
 		grade.id = "grade";
-		grade.min = "0";
-		grade.max = "7";
 		let gradePlus = document.createElement("input");
 		gradePlus.type = "checkbox";
 		gradePlus.id = "gradePlus";
