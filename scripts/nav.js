@@ -20,7 +20,8 @@ let NAV = {
 	// markers for creation view
 	markers: [],
 
-	// Grade filters
+	// Grade filters. If a filter option is
+	// true, it means to hide those routes.
 	filters: LOADER.loadFilter(),
 
 	populateRoutes: (routes) => {
@@ -363,11 +364,26 @@ let NAV = {
 	},
 
 	filter: (routes) => {
+		// Toggle filter buttons for inactive routes
+		$('#filter .grade').each((index, element) => {
+			let filter = $(element);
+
+			// By default, set filter to active
+			filter.removeClass('inactive');
+
+			// If the user has turned off this grade,
+			// make the filter button inactive.
+			let grade = filter.text();
+			if (NAV.filters[grade]) {
+				filter.addClass('inactive');
+			}
+		});
+
 		let filtered = routes.filter((route) => {
 			// Only grab V and number from grade
 			// e.g. V2 for a route that is graded V2+
 			let grade = route.grade.substring(0, 2);
-			return NAV.filters[grade];
+			return ! NAV.filters[grade];
 		});
 
 		return filtered;
@@ -415,7 +431,7 @@ let NAV = {
 				gradeMinus.checked = true;
 			}else if(subGrade == null){
 				gradeProject.checked = true;
-			}	
+			}
 			description.value = route.description;
 		}else {
 			routeName.placeholder = "Route Name";
@@ -457,7 +473,7 @@ let NAV = {
 		var creationHeight = metaObj['creationHeight'];
 		var currentWidth = $('#canvas')[0].clientWidth;
 		var currentHeight = $('#canvas')[0].clientHeight;
-		
+
 		var widthRatio = currentWidth / creationWidth;
 		var heightRatio = currentHeight / creationHeight;
 		var markers = metaObj['markers'];
@@ -557,7 +573,15 @@ $(document).ready(() => {
 		let element = $(this);
 		element.toggleClass('inactive');
 		let grade = element.text();
-		NAV.filters[grade] = ! NAV.filters[grade];
+
+		// Toggle filter setting
+		if (NAV.filters[grade]) {
+			delete NAV.filters[grade];
+		} else {
+			NAV.filters[grade] = true;
+		}
+
+		LOADER.saveFilter(NAV.filters);
 
 		// Refresh list of routes
 		NAV.refreshRoutes();

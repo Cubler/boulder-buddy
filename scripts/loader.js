@@ -1,13 +1,6 @@
 let LOADER = {
 	DEFAULT_FILTER: {
-		'V0': true,
-		'V1': true,
-		'V2': true,
-		'V3': true,
-		'V4': true,
-		'V5': true,
-		'V6': true,
-		'V7': true,
+		'VP': true,
 	},
 
 	// All routes from server
@@ -25,10 +18,16 @@ let LOADER = {
 	loadFilter: () => {
 		let filter = window.localStorage.getItem('filter');
 		if (filter == null) {
-			filter = LOADER.DEFAULT_FILTER;
+			LOADER.saveFilter(LOADER.DEFAULT_FILTER);
+			return LOADER.loadFilter();
 		}
 
-		return filter;
+		return JSON.parse(filter);
+	},
+
+	saveFilter: (filter) => {
+		let json = JSON.stringify(filter);
+		window.localStorage.setItem('filter', json);
 	},
 };
 
