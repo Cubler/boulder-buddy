@@ -26,11 +26,14 @@ let DATABASE = {
         }
 
         if(jQuery('#routeName').val()=="" || (jQuery('#grade').val()==""
-                && !jQuery('#gradeProject').is(":checked"))){
-            alert("Please Fill Out Information");
+                && !jQuery('#gradeProject').is(":checked"))
+                || jQuery('#grade').val()<0){
+            alert("Please fill out grade and name");
         }else if(jQuery('#gradePlus').is(":checked")
                 && jQuery('#gradeMinus').is(":checked")){
-            alert("Select Plus, Minus,or Neither");
+            alert("Select Plus, Minus, or Neither");
+        }else if(jQuery('#grade').val()>10){
+            alert("Good on ya! But we don't currently go harder than V10");
         }else {
             var pushed, key
             if(NAV.currentRoute == null){
@@ -69,6 +72,7 @@ let DATABASE = {
             DATABASE.db.ref('/routeMaps/' + key).set({
                 map: canvas.toDataURL('image/png')
             });
+            NAV.transition('#menu');
         }
     },
 
