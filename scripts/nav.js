@@ -83,7 +83,7 @@ let NAV = {
 
 		setter.text('Setter: ' + (route.setterName || 'Unknown'));
 		picture.css({
-			'background-image': 'url(../assets/cave.jpg)',
+			'background-image': 'url(./assets/cave.jpg)',
 			'width': '100vw',
 			'height': '100%',
 			'background-size': '100vw auto',
