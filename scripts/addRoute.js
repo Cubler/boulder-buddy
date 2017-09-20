@@ -380,9 +380,6 @@ $(document).ready(function (){
 
     }
 
-    // This is needed since I can't change the buttonSize with 
-    //one call during the load of the route (*fix later when I refactor)
-
     function detectMarksAt(x,y){
         for (var i = 0; i < NAV.markers.length; i++) {
             var mark = NAV.markers[i];
