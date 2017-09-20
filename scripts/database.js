@@ -45,7 +45,6 @@ let DATABASE = {
                 var index = LOADER.routes.indexOf(NAV.currentRoute);
                 LOADER.routes.splice(index,1);
             }
-
             // format grade for parsing
             var gradeString;
             if(jQuery('#gradeProject').is(":checked")){
@@ -65,6 +64,7 @@ let DATABASE = {
                 description: jQuery('#description').val(),
                 favorites: {},
                 markerMetaData: JSON.stringify(markerMetaData),
+                isMainWall: NAV.isMainWall
             };
             DATABASE.db.ref('/routes/' + key).set(entry);
             LOADER.routes.unshift(entry);
@@ -119,6 +119,7 @@ let DATABASE = {
                     description: routesInfo[key]['description'],
                     favorites: routesInfo[key]['favorites'] || {},
                     markerMetaData: routesInfo[key]['markerMetaData'],
+                    isMainWall: routesInfo[key]['isMainWall'],
                 });
             }
             resolve(DATABASE.routes);

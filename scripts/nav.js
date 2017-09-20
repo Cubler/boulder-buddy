@@ -20,6 +20,9 @@ let NAV = {
 	// markers for creation view
 	markers: [],
 
+	// boolean to determine if the route is the main wall or cave
+	isMainWall: null,
+
 	// Grade filters. If a filter option is
 	// true, it means to hide those routes.
 	filters: LOADER.loadFilter(),
@@ -56,6 +59,15 @@ let NAV = {
 	populateRoute: (route) => {
 		let container = $('#route');
 		container.html('');
+		let aspectRatio = null;
+		let picPath = null;
+		if(route.isMainWall){
+			aspectRatio = LOADER.mainWallAspect;
+			picPath = LOADER.mainWallPath;
+		}else{
+			aspectRatio = LOADER.caveAspect;
+			picPath = LOADER.cavePath;
+		}
 
 		let options = {};
 		options.enableFavoritesAction = true;
@@ -68,7 +80,7 @@ let NAV = {
 		viewCanvas.style.width='100%';
 		viewCanvas.style.height='';
 		viewCanvas.width=$('#photo')[0].clientWidth;
-		viewCanvas.height=viewCanvas.width/LOADER.caveAspect;
+		viewCanvas.height=viewCanvas.width/aspectRatio;
 		let context = viewCanvas.getContext('2d');
 
 		DATABASE.loadMap(route.key).then((map) =>{
@@ -80,10 +92,9 @@ let NAV = {
 			img.src = map;
 		});
 
-
 		setter.text('Setter: ' + (route.setterName || 'Unknown'));
 		picture.css({
-			'background-image': 'url(./assets/cave.jpg)',
+			'background-image': 'url('+picPath+')',
 			'width': '100vw',
 			'height': '100%',
 			'background-size': '100vw auto',
@@ -260,12 +271,9 @@ let NAV = {
 		if (selector == '#menu') {
 			icons.push('fa-plus')
 			actions.push(() => {
-				// Go to creation view
-				// clear
-				$('#canvas')[0].getContext('2d').clearRect(0,0,$('#canvas')[0].width,$('#canvas')[0].height);
-				NAV.markers=[];
+				// Go to location Choosing view
 				NAV.currentRoute = null;
-				NAV.transition('#create-route');
+				NAV.transition('#location-choose');
 			});
 		} else if (selector == '#routes') {
 			icons.push('fa-search');
@@ -300,9 +308,10 @@ let NAV = {
 				icons.push('fa-pencil');
 				actions.push(() => {
 					// Delete currently viewed route
+					NAV.setUpCreation(NAV.currentRoute.isMainWall);
 					NAV.loadEditMetaData();
 					NAV.draw();
-					NAV.transition('#create-route');
+					NAV.transition("#create-route");
 				});
 			}
 		}
@@ -504,6 +513,25 @@ let NAV = {
 			ctx.strokeStyle = 'rgba(0,255,0,1)';
 		}
 		ctx.stroke();
+	},
+
+	setUpCreation: (isMain) => {
+		// Setup creation view
+		// clear
+		$('#canvas')[0].getContext('2d').clearRect(0,0,$('#canvas')[0].width,$('#canvas')[0].height);
+		NAV.markers=[];
+		NAV.isMainWall = isMain;
+		var canvas = document.getElementById("canvas");
+		var aspectRatio = null;
+		if(isMain){
+			$('#photo').css("background-image", "url("+LOADER.mainWallPath+")"); 
+			aspectRatio = LOADER.mainWallAspect;
+		}else {
+			$('#photo').css("background-image", "url("+LOADER.cavePath)+")";
+			aspectRatio = LOADER.caveAspect;
+		}
+		canvas.width=$('#photo')[0].clientWidth;
+		canvas.height=canvas.width/aspectRatio;
 	},
 };
 

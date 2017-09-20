@@ -4,8 +4,6 @@ $(document).ready(function (){
     var ctx = canvas.getContext("2d");
     canvas.style.width='100%';
     canvas.style.height='';
-    canvas.width=$('#photo')[0].clientWidth;
-    canvas.height=canvas.width/LOADER.caveAspect;
     var PORTRAITWIDTH = 0;
     var PORTRAITHEIGHT = 0;
     var LANDSCAPEWIDTH = 0;
@@ -382,6 +380,8 @@ $(document).ready(function (){
 
     }
 
+    // This is needed since I can't change the buttonSize with 
+    //one call during the load of the route (*fix later when I refactor)
 
     function detectMarksAt(x,y){
         for (var i = 0; i < NAV.markers.length; i++) {
