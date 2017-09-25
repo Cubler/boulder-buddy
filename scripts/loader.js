@@ -5,8 +5,10 @@ let LOADER = {
 
 	// All routes from server
 	routes: [],
-	wallAspect: 4032/3024,
+	mainWallAspect: 4032/3024,
 	caveAspect: 3024/4032,
+	cavePath: "./assets/cave.jpg",
+	mainWallPath: "./assets/mainWall.jpg",
 
 	loadRoutes: () => {
 		// Return a promise containing all the routes
@@ -39,7 +41,7 @@ $(document).ready(() => {
 		LOADER.routes = routes;
 
 		// Uncomment this line to bypass facebook login
-		//LOGIN.bypass();
+		LOGIN.bypass();
 
 		// Verify using facebook login
 		LOGIN.verify();

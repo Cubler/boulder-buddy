@@ -4,8 +4,6 @@ $(document).ready(function (){
     var ctx = canvas.getContext("2d");
     canvas.style.width='100%';
     canvas.style.height='';
-    canvas.width=$('#photo')[0].clientWidth;
-    canvas.height=canvas.width/LOADER.caveAspect;
     var PORTRAITWIDTH = 0;
     var PORTRAITHEIGHT = 0;
     var LANDSCAPEWIDTH = 0;
@@ -381,7 +379,6 @@ $(document).ready(function (){
         scrnclkY+=hardCaliY;
 
     }
-
 
     function detectMarksAt(x,y){
         for (var i = 0; i < NAV.markers.length; i++) {

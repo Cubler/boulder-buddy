@@ -1,5 +1,4 @@
 #photo{
-	background-image: url("../assets/cave.jpg");
     width: 100vw;
     height: 100%;
     background-size: 100vw auto;
@@ -18,4 +17,11 @@
 }
 #formDiv{
 	text-align: center;
+}
+.choicePic{
+	width: 47vw;
+	height: 100%;
+	background-size: 49vw auto;
+	background-repeat: no-repeat;
+	float:left;
 }
