@@ -90,7 +90,7 @@ $(document).ready(function (){
         
     });
 
-    // //Mobile Support mouse events
+    // Mobile Support mouse events
     canvas.addEventListener('touchstart', function (e){
 		myTouchStart(e);
 	});
@@ -184,12 +184,12 @@ $(document).ready(function (){
 		}
 	}
 
-    function myTouchEnd(){
+    function myTouchEnd(e){
 		clearTimeout(timeout);
 		myUp(e);
     }
 
-    function myTouchMove(){
+    function myTouchMove(e){
 		clearTimeout(timeout);
 		myMove(e);
     }
