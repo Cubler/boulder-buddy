@@ -286,7 +286,13 @@ let NAV = {
 			icons.push('fa-trash');
 			actions.push(() => {
 				// Delete currently viewed route
-				DATABASE.delete();
+				if(NAV.currentRoute != null){
+					DATABASE.delete(NAV.currentRoute);
+				}else {
+					if(confirm("Are you sure you want to delete?")){
+						NAV.transition('#menu');
+					}
+				}
 			});
 			icons.push('fa-floppy-o');
 			actions.push(()=> {
@@ -435,7 +441,7 @@ let NAV = {
 				gradePlus.checked = true;
 			}else if(subGrade=="-"){
 				gradeMinus.checked = true;
-			}else if(subGrade == null){
+			}else if(gradeProjectValue){
 				gradeProject.checked = true;
 			}
 			description.value = route.description;

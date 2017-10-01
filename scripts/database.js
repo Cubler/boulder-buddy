@@ -72,6 +72,7 @@ let DATABASE = {
             DATABASE.db.ref('/routeMaps/' + key).set({
                 map: canvas.toDataURL('image/png')
             });
+            NAV.currentRoute = entry;
             NAV.transition('#menu');
         }
     },
