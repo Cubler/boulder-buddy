@@ -9,7 +9,7 @@ $(document).ready(function (){
     var LANDSCAPEWIDTH = 0;
     var LANDSCAPEHEIGHT = 0;
     var BB = canvas.getBoundingClientRect();
-    var offsetX = BB.left;
+    var offsetX = 0;
     var offsetY = BB.top;
     var sButRadius = canvas.clientWidth*(0.014);
     var mButRadius = canvas.clientWidth*(0.025);
@@ -23,7 +23,7 @@ $(document).ready(function (){
     var timeout, longtouch
     var timeoutDuration = 300;
     var moved=false;
-    var hardCaliX=-canvas.offsetLeft;
+    var hardCaliX=-5;
     var hardCaliY=-2;
     
     // drag related variables
@@ -40,7 +40,8 @@ $(document).ready(function (){
     NAV.markers = [];
 
     //set up orientation heights and widths
-    var defaultOrientation = window.screen.orientation.type;
+    var defaultOrientation = null;
+    defaultOrientation = getOrientation();
 
     if(defaultOrientation == "portrait-primary" || defaultOrientation== "portrait-secondary"){ 
         var PORTRAITWIDTH = canvas.clientWidth;
@@ -87,35 +88,16 @@ $(document).ready(function (){
         
     });
 
-    // //Mobile Support mouse events
+    // Mobile Support mouse events
     canvas.addEventListener('touchstart', function (e){
-		jQuery("#chooseWindow").css({
-            display: 'none'});
-        jQuery("#selectWindow").css({
-            display: 'none'});
-		timeout = setTimeout(function() {
-            setClkPositions(e);
-            if(!detectMarksAt(canvasclkX,canvasclkY)){
-                displaySizeChoose();
-            }
-        }, timeoutDuration);
-		setClkPositions(e);
-    	if(detectMarksAt(canvasclkX,canvasclkY)){
-    		displayDel();
-			myDown(e);
-    	}else {
-	
-    	}
-
+		myTouchStart(e);
 	});
     canvas.addEventListener('touchend', function (e){
-        clearTimeout(timeout);
-    	myUp(e);
+        myTouchEnd(e);
     });
 
     canvas.addEventListener('touchmove', function (e){
-        clearTimeout(timeout);
-		myMove(e);
+        myTouchMove(e);
     });
 
     window.onload = function() {
@@ -182,6 +164,33 @@ $(document).ready(function (){
         }
     }
 
+    function myTouchStart(e){
+		jQuery("#chooseWindow").css({
+            display: 'none'});
+        jQuery("#selectWindow").css({
+            display: 'none'});
+		timeout = setTimeout(function() {
+            setClkPositions(e);
+            if(!detectMarksAt(canvasclkX,canvasclkY)){
+                displaySizeChoose();
+            }
+        }, timeoutDuration);
+		setClkPositions(e);
+		if(detectMarksAt(canvasclkX,canvasclkY)){
+			displayDel();
+			myDown(e);
+		}
+	}
+
+    function myTouchEnd(e){
+		clearTimeout(timeout);
+		myUp(e);
+    }
+
+    function myTouchMove(e){
+		clearTimeout(timeout);
+		myMove(e);
+    }
 
     // handle mousedown events
     function myDown(e) {
@@ -348,7 +357,7 @@ $(document).ready(function (){
         	scrnclkY = e.pageY-$('#navbar')[0].clientHeight;
     	}
         //Orientation depended position for canvas
-        var orientation = window.screen.orientation.type;
+        var orientation = getOrientation();
 
         if(orientation == defaultOrientation){ 
             canvasclkX = scrnclkX
@@ -379,6 +388,32 @@ $(document).ready(function (){
         scrnclkY+=hardCaliY;
 
     }
+
+    function getOrientation(){
+		var orient = null;
+		try{
+			orient = window.screen.orientation.type;
+		}catch(err){
+			console.log(err.message);
+		}try{
+			//ios
+			switch(window.orientation){
+				case 0:
+				case 180:
+					orient = "portrait-primary";
+					break;
+				case -90:
+				case 90:
+					orient = "landscape-primary";
+					break;
+				default:
+					console.log("Invalid Window.orientation")
+			}
+		}catch(err){
+			console.log(err.message);
+		}
+		return orient;
+	}
 
     function detectMarksAt(x,y){
         for (var i = 0; i < NAV.markers.length; i++) {
