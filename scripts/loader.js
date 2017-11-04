@@ -5,7 +5,7 @@ let LOADER = {
 
 	// All routes from server
 	routes: [],
-	mainWallAspect: 4032/3024,
+	mainWallAspect: 3024/4032,
 	caveAspect: 3024/4032,
 	cavePath: "./assets/cave.jpg",
 	mainWallPath: "./assets/mainWall.jpg",
