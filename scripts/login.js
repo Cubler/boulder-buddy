@@ -27,6 +27,8 @@ let LOGIN = {
 					LOGIN.authenticate($name, userID);
 				});
 			} else {
+				let options = {};
+				options.reset = true;
 				NAV.transition('#login', options);
 			}
 		});
