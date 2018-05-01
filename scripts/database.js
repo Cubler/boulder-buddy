@@ -92,6 +92,9 @@ let DATABASE = {
     },
 
     deleteWall: function(wallKey){
+        // Don't support delete right now. Should have so it deletes routes 
+        // associated with wall before launching the functionality.
+        return -1
         let wall = DATABASE.walls[wallKey]
         if(confirm("Delete "+wall.name+"?")){
             DATABASE.db.ref('walls/'+wall.key).remove();
