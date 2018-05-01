@@ -12,6 +12,7 @@ firebase.initializeApp(config);
 let DATABASE = {
 
     db: firebase.database(),
+    storage: firebase.storage(),
     routes: [],
     walls: {},
 
@@ -94,6 +95,8 @@ let DATABASE = {
         let wall = DATABASE.walls[wallKey]
         if(confirm("Delete "+wall.name+"?")){
             DATABASE.db.ref('walls/'+wall.key).remove();
+            DATABASE.storage.ref('/walls/'+wallKey+'.jpg').delete();
+
             delete LOADER.walls[wallKey];
             NAV.transition('#menu');
         }
@@ -141,21 +144,28 @@ let DATABASE = {
         var pushed, key
         pushed = DATABASE.db.ref('/walls').push();
         key = pushed.getKey();
-        var reader = new FileReader();
         var name = $('#wallName').val();
 
-        var fileInput = document.getElementById('wallInput');
-        blob = fileInput.files[0];
-        reader.readAsDataURL(blob);
-        reader.onloadend = () => {
-            var entry = {
-                key: key,
-                name: name,
-                image: reader.result,
-            };
-            DATABASE.db.ref('/walls/' + key).set(entry);
-            LOADER.walls[entry.key]=entry;
-        };
+        var url = $('#wallPic')[0].src;
+
+        fetch(url)
+        .then(res => res.blob()).then(blob => {
+            DATABASE.storage.ref('/walls/'+key+".jpg").put(blob).then((snapshot)=>{
+                DATABASE.storage.ref('/walls/'+key+".jpg").getDownloadURL().then((url)=>{
+                    var entry = {
+                        key: key,
+                        name: name,
+                        image: url,
+                    }
+                    DATABASE.db.ref('/walls/' + key).set(entry);
+                    LOADER.walls[entry.key] = entry;
+                    NAV.transition('#menu');
+                });
+            });
+        });
+
+       
+
 
     },
 

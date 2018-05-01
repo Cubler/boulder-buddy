@@ -333,6 +333,13 @@ let NAV = {
 				NAV.transition('#save-wall');
 			});
 		} else if (selector =='#save-wall'){
+			icons.push('fa-repeat');
+			actions.push(()=> {
+				// Save the Route to database
+				NAV.rotateBase64Img($('#wallPic')[0].src).then((base64Data)=>{
+					$('#wallPic')[0].src = base64Data;
+				})
+			})
 			icons.push('fa-floppy-o');
 			actions.push(()=> {
 				// Save the Route to database
@@ -422,6 +429,24 @@ let NAV = {
 		return filtered;
 	},
 
+	rotateBase64Img: (base64Data)=>{
+		return new Promise((resolve,reject)=>{
+			let canvas = document.createElement('canvas');
+			let context = canvas.getContext('2d');
+			let image = new Image();
+			image.src = base64Data;
+			canvas.width = image.height;
+			canvas.height = image.width;
+			image.onload = () => {
+	      		context.rotate(90 * Math.PI / 180);
+				context.translate(0,-canvas.width);
+	        	context.drawImage(image, 0, 0); 
+	        	resolve(canvas.toDataURL());
+			};
+		});
+		
+	},
+
 	buildSaveForm: () => {
 
 		let gradeValue,routeNameValue, subGrade, gradeProjectValue, descriptionValue;
@@ -498,17 +523,23 @@ let NAV = {
 		wallName.id = "wallName";
 
 		let img = document.createElement("img");
+		img.id = 'wallPic';
+		img.style.width='100%'
 
 		let fileInput = document.createElement("input");
 		fileInput.type = "file";
 		fileInput.accept = "image/*";
 		fileInput.id = "wallInput";
 
+        let reader = new FileReader();
+
 		fileInput.addEventListener('change', (e)=>{
 			blob = e.target.files[0];
-			img.src = URL.createObjectURL(blob);
+			reader.readAsDataURL(blob);
+			reader.onloadend = () => {
+            	img.src = reader.result;
+	        };
 		});
-
 		
 		formDiv.append(document.createTextNode("Wall Name: "))
 		formDiv.append(wallName);
@@ -528,7 +559,9 @@ let NAV = {
 			let img = document.createElement("img");
 			img.src = DATABASE.walls[keys[i]].image;
 			img.id = ''+keys[i];
-			img.className = 'choicePic';
+			img.onload = () =>{
+				img.className = 'choicePic';
+			};
 			if(isDelete){
 				img.addEventListener('click', (e)=>{
 					DATABASE.deleteWall(e.target.id);
