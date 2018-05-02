@@ -21,7 +21,7 @@ let NAV = {
 	markers: [],
 
 	// boolean to determine if the route is the main wall or cave
-	isMainWall: null,
+	wallKey: null, 
 
 	// Grade filters. If a filter option is
 	// true, it means to hide those routes.
@@ -59,15 +59,10 @@ let NAV = {
 	populateRoute: (route) => {
 		let container = $('#route');
 		container.html('');
-		let aspectRatio = null;
-		let picPath = null;
-		if(route.isMainWall){
-			aspectRatio = LOADER.mainWallAspect;
-			picPath = LOADER.mainWallPath;
-		}else{
-			aspectRatio = LOADER.caveAspect;
-			picPath = LOADER.cavePath;
-		}
+		let picPath = DATABASE.walls[route.wallKey].image;
+		let img = new Image;
+		img.src = DATABASE.walls[route.wallKey].image;
+		let aspectRatio = img.width/img.height;
 
 		let options = {};
 		options.enableFavoritesAction = true;
@@ -273,6 +268,7 @@ let NAV = {
 			actions.push(() => {
 				// Go to location Choosing view
 				NAV.currentRoute = null;
+				NAV.buildLocationChooser(false);
 				NAV.transition('#location-choose');
 			});
 		} else if (selector == '#routes') {
@@ -314,13 +310,41 @@ let NAV = {
 				icons.push('fa-pencil');
 				actions.push(() => {
 					// Delete currently viewed route
-					NAV.setUpCreation(NAV.currentRoute.isMainWall);
+					NAV.setUpCreation(NAV.currentRoute.wallKey);
 					NAV.loadEditMetaData();
 					NAV.draw();
 					NAV.transition("#create-route");
 				});
 			}
+		} else if (selector == '#location-choose'){
+			icons.push('fa-trash');
+			actions.push(() => {
+				// Delete a wall by changing the event listeners for 
+				// the img clicks to call Database.delete()
+				NAV.buildLocationChooser(true);
+
+			});
+			icons.push('fa-plus')
+			actions.push(()=> {
+				// Save the Route to database and go to menu view
+				NAV.buildAddWallForm();
+				NAV.transition('#save-wall');
+			});
+		} else if (selector =='#save-wall'){
+			icons.push('fa-repeat');
+			actions.push(()=> {
+				// Save the Route to database
+				NAV.rotateBase64Img($('#wallPic')[0].src).then((base64Data)=>{
+					$('#wallPic')[0].src = base64Data;
+				})
+			})
+			icons.push('fa-floppy-o');
+			actions.push(()=> {
+				// Save the Route to database
+				DATABASE.addWall();
+			})
 		}
+
 
 		// Reveal new actions/icons
 		for (let i = 0; i < actions.length; i++) {
@@ -403,6 +427,24 @@ let NAV = {
 		return filtered;
 	},
 
+	rotateBase64Img: (base64Data)=>{
+		return new Promise((resolve,reject)=>{
+			let canvas = document.createElement('canvas');
+			let context = canvas.getContext('2d');
+			let image = new Image();
+			image.src = base64Data;
+			canvas.width = image.height;
+			canvas.height = image.width;
+			image.onload = () => {
+				context.rotate(90 * Math.PI / 180);
+				context.translate(0,-canvas.width);
+				context.drawImage(image, 0, 0); 
+				resolve(canvas.toDataURL());
+			};
+		});
+		
+	},
+
 	buildSaveForm: () => {
 
 		let gradeValue,routeNameValue, subGrade, gradeProjectValue, descriptionValue;
@@ -467,6 +509,70 @@ let NAV = {
 		container.append(formDiv);
 	},
 
+	buildAddWallForm: () => {
+
+		let container = $('#save-wall');
+		container.html = "";
+		container.empty();
+
+		let formDiv = $('<form>').attr('id', 'formDiv');
+		let wallName = document.createElement("input");
+		wallName.type = "text";
+		wallName.id = "wallName";
+
+		let img = document.createElement("img");
+		img.id = 'wallPic';
+		img.style.width='100%'
+
+		let fileInput = document.createElement("input");
+		fileInput.type = "file";
+		fileInput.accept = "image/*";
+		fileInput.id = "wallInput";
+
+		let reader = new FileReader();
+
+		fileInput.addEventListener('change', (e)=>{
+			blob = e.target.files[0];
+			reader.readAsDataURL(blob);
+			reader.onloadend = () => {
+				img.src = reader.result;
+			};
+		});
+		
+		formDiv.append(document.createTextNode("Wall Name: "))
+		formDiv.append(wallName);
+		formDiv.append(fileInput);
+		container.append(formDiv);
+		container.append(img);
+	},
+
+	buildLocationChooser: (isDelete) => {
+
+		let container = $('#location-choose');
+		container.html = "";
+		container.empty();
+		let keys = Object.keys(DATABASE.walls)
+		for(var i=0; i<keys.length; i++){
+			let img = document.createElement("img");
+			img.src = DATABASE.walls[keys[i]].image;
+			img.id = ''+keys[i];
+			img.onload = () =>{
+				img.className = 'choicePic';
+			};
+			if(isDelete){
+				img.addEventListener('click', (e)=>{
+					DATABASE.deleteWall(e.target.id);
+				});
+			}else{
+				img.addEventListener('click', (e)=>{
+					NAV.setUpCreation(e.target.id);
+					NAV.transition("#create-route");
+				});
+			}
+			container.append(img);
+		}
+	},
+
 	// return in form gradeNum, subGrade = {+, null, -}, vProject = {true, false}
 	parseGradeString: (gradeString) => {
 		if(gradeString=='VP'){
@@ -521,21 +627,19 @@ let NAV = {
 		ctx.stroke();
 	},
 
-	setUpCreation: (isMain) => {
+	setUpCreation: (wallKey) => {
 		// Setup creation view
 		// clear
 		$('#canvas')[0].getContext('2d').clearRect(0,0,$('#canvas')[0].width,$('#canvas')[0].height);
 		NAV.markers=[];
-		NAV.isMainWall = isMain;
+		NAV.wallKey = wallKey;
 		var canvas = document.getElementById("canvas");
-		var aspectRatio = null;
-		if(isMain){
-			$('#photo').css("background-image", "url("+LOADER.mainWallPath+")"); 
-			aspectRatio = LOADER.mainWallAspect;
-		}else {
-			$('#photo').css("background-image", "url("+LOADER.cavePath)+")";
-			aspectRatio = LOADER.caveAspect;
-		}
+		$('#photo').css("background-image", "url("+DATABASE.walls[wallKey].image+")"); 
+
+		let img = new Image;
+		img.src = DATABASE.walls[wallKey].image;
+		let aspectRatio = img.width/img.height;
+
 		canvas.width=$('#photo')[0].clientWidth;
 		canvas.height=canvas.width/aspectRatio;
 	},

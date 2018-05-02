@@ -5,15 +5,18 @@ let LOADER = {
 
 	// All routes from server
 	routes: [],
-	mainWallAspect: 3024/4032,
-	caveAspect: 3024/4032,
-	cavePath: "./assets/cave.jpg",
-	mainWallPath: "./assets/mainWall.jpg",
 
 	loadRoutes: () => {
 		// Return a promise containing all the routes
 		return new Promise((resolve, reject) => {
 			DATABASE.loadAllRoutes(resolve);
+		});
+	},
+
+	loadWalls: () => {
+		// Return a promise containing all the routes
+		return new Promise((resolve, reject) => {
+			DATABASE.loadAllWalls(resolve);
 		});
 	},
 
@@ -39,7 +42,9 @@ $(document).ready(() => {
 	// Load routes from firebase
 	LOADER.loadRoutes().then((routes) => {
 		LOADER.routes = routes;
-
+		LOADER.loadWalls().then((walls)=>{
+			LOADER.walls = walls;
+		})
 		// Uncomment this line to bypass facebook login
 		// LOGIN.bypass();
 

@@ -12,7 +12,9 @@ firebase.initializeApp(config);
 let DATABASE = {
 
     db: firebase.database(),
+    storage: firebase.storage(),
     routes: [],
+    walls: {},
 
     save: function(){
         
@@ -64,7 +66,7 @@ let DATABASE = {
                 description: jQuery('#description').val(),
                 favorites: {},
                 markerMetaData: JSON.stringify(markerMetaData),
-                isMainWall: NAV.isMainWall
+                wallKey: NAV.wallKey,
             };
             DATABASE.db.ref('/routes/' + key).set(entry);
             LOADER.routes.unshift(entry);
@@ -89,6 +91,20 @@ let DATABASE = {
         }
     },
 
+    deleteWall: function(wallKey){
+        // Don't support delete right now. Should have so it deletes routes 
+        // associated with wall before launching the functionality.
+        return -1
+        let wall = DATABASE.walls[wallKey]
+        if(confirm("Delete "+wall.name+"?")){
+            DATABASE.db.ref('walls/'+wall.key).remove();
+            DATABASE.storage.ref('/walls/'+wallKey+'.jpg').delete();
+
+            delete LOADER.walls[wallKey];
+            NAV.transition('#menu');
+        }
+    },
+
     loadMap: function(key){
         return new Promise((resolve, reject) =>{
             DATABASE.db.ref('/routeMaps/'+key+'/map').once('value').then(function(snapshot){
@@ -108,22 +124,67 @@ let DATABASE = {
     },
 
     loadAllRoutes: function(resolve){
-        DATABASE.db.ref("routes").once('value').then(function(snapshot){
-            routesInfo = snapshot.val();
-            for(var key in routesInfo){
+        DATABASE.db.ref("/routes").once('value').then(function(snapshot){
+            routeInfo = snapshot.val();
+            for(var key in routeInfo){
                 DATABASE.routes.unshift({
-                    key: routesInfo[key]['key'],
-                    name: routesInfo[key]['name'],
-                    setterName: routesInfo[key]['setterName'],
-                    setterID: routesInfo[key]['setterID'],
-                    grade: routesInfo[key]['grade'],
-                    description: routesInfo[key]['description'],
-                    favorites: routesInfo[key]['favorites'] || {},
-                    markerMetaData: routesInfo[key]['markerMetaData'],
-                    isMainWall: routesInfo[key]['isMainWall'],
+                    key: routeInfo[key]['key'],
+                    name: routeInfo[key]['name'],
+                    setterName: routeInfo[key]['setterName'],
+                    setterID: routeInfo[key]['setterID'],
+                    grade: routeInfo[key]['grade'],
+                    description: routeInfo[key]['description'],
+                    favorites: routeInfo[key]['favorites'] || {},
+                    markerMetaData: routeInfo[key]['markerMetaData'],
+                    wallKey: routeInfo[key]['wallKey'],
                 });
             }
             resolve(DATABASE.routes);
+        });
+    },
+
+    addWall: () => {
+        var pushed, key
+        pushed = DATABASE.db.ref('/walls').push();
+        key = pushed.getKey();
+        var name = $('#wallName').val();
+
+        var url = $('#wallPic')[0].src;
+
+        fetch(url)
+        .then(res => res.blob()).then(blob => {
+            DATABASE.storage.ref('/walls/'+key+".jpg").put(blob).then((snapshot)=>{
+                DATABASE.storage.ref('/walls/'+key+".jpg").getDownloadURL().then((url)=>{
+                    var entry = {
+                        key: key,
+                        name: name,
+                        image: url,
+                    }
+                    DATABASE.db.ref('/walls/' + key).set(entry);
+                    LOADER.walls[entry.key] = entry;
+                    NAV.transition('#menu');
+                });
+            });
+        });
+
+       
+
+
+    },
+
+    loadAllWalls: (resolve)=>{
+        DATABASE.db.ref("walls").once('value').then(function(snapshot){
+            wallInfo = snapshot.val();
+            for(var key in wallInfo){
+                let entry = {
+                    key: wallInfo[key]['key'],
+                    name: wallInfo[key]['name'],
+                    image: wallInfo[key]['image'],
+                };
+                DATABASE.walls[key]=entry;
+            }
+
+            resolve(DATABASE.walls);
         });
     },
 }
