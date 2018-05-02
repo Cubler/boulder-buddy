@@ -81,13 +81,17 @@ let DATABASE = {
 
     delete: function(route){
         if(confirm("Delete "+route.name+"?")){
-            DATABASE.db.ref('routes/'+route.key).remove();
-            DATABASE.db.ref('routeMaps/'+route.key).remove();
-            var index = LOADER.routes.indexOf(route);
-            if(index > -1){
-                LOADER.routes.splice(index,1);
-            }
+            DATABASE._delete(route);
             NAV.transition('#menu');
+        }
+    },
+
+    _delete: (route)=>{
+        DATABASE.db.ref('routes/'+route.key).remove();
+        DATABASE.db.ref('routeMaps/'+route.key).remove();
+        var index = LOADER.routes.indexOf(route);
+        if(index > -1){
+            LOADER.routes.splice(index,1);
         }
     },
 
@@ -101,6 +105,11 @@ let DATABASE = {
             DATABASE.storage.ref('/walls/'+wallKey+'.jpg').delete();
 
             delete LOADER.walls[wallKey];
+            for(var i =0; i< LOADER.routes; i++){
+                if(LOADER.routes[i].wallKey === wallKey){
+                    DATABASE._delete(LOADER.routes[i]);
+                }
+            }
             NAV.transition('#menu');
         }
     },
