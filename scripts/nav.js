@@ -319,12 +319,10 @@ let NAV = {
 		} else if (selector == '#location-choose'){
 			icons.push('fa-trash');
 			actions.push(() => {
-				// Delete a wall
+				// Delete a wall by changing the event listeners for 
+				// the img clicks to call Database.delete()
 				NAV.buildLocationChooser(true);
 
-				// window.addEventListener('click',(e)=>{
-				// 	DATABASE.deleteWall(e.target.id);
-				// }, {once:true});
 			});
 			icons.push('fa-plus')
 			actions.push(()=> {
@@ -438,10 +436,10 @@ let NAV = {
 			canvas.width = image.height;
 			canvas.height = image.width;
 			image.onload = () => {
-	      		context.rotate(90 * Math.PI / 180);
+				context.rotate(90 * Math.PI / 180);
 				context.translate(0,-canvas.width);
-	        	context.drawImage(image, 0, 0); 
-	        	resolve(canvas.toDataURL());
+				context.drawImage(image, 0, 0); 
+				resolve(canvas.toDataURL());
 			};
 		});
 		
@@ -531,14 +529,14 @@ let NAV = {
 		fileInput.accept = "image/*";
 		fileInput.id = "wallInput";
 
-        let reader = new FileReader();
+		let reader = new FileReader();
 
 		fileInput.addEventListener('change', (e)=>{
 			blob = e.target.files[0];
 			reader.readAsDataURL(blob);
 			reader.onloadend = () => {
-            	img.src = reader.result;
-	        };
+				img.src = reader.result;
+			};
 		});
 		
 		formDiv.append(document.createTextNode("Wall Name: "))
@@ -546,7 +544,6 @@ let NAV = {
 		formDiv.append(fileInput);
 		container.append(formDiv);
 		container.append(img);
-
 	},
 
 	buildLocationChooser: (isDelete) => {
@@ -573,11 +570,8 @@ let NAV = {
 				});
 			}
 			container.append(img);
-
 		}
 	},
-
-
 
 	// return in form gradeNum, subGrade = {+, null, -}, vProject = {true, false}
 	parseGradeString: (gradeString) => {
