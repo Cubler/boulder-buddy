@@ -74,7 +74,6 @@ let NAV = {
 		viewCanvas.style.width='100%';
 		viewCanvas.style.height='auto';
 		viewCanvas.width=$('#photo')[0].clientWidth;
-	//	viewCanvas.height=viewCanvas.width/aspectRatio;
 		let context = viewCanvas.getContext('2d');
 
 		DATABASE.loadMap(route.key).then((map) =>{
