@@ -62,7 +62,6 @@ let NAV = {
 		let picPath = DATABASE.walls[route.wallKey].image;
 		let img = new Image;
 		img.src = DATABASE.walls[route.wallKey].image;
-		let aspectRatio = img.width/img.height;
 
 		let options = {};
 		options.enableFavoritesAction = true;
@@ -73,14 +72,17 @@ let NAV = {
 		let descriptionLabel= $('<div>').addClass('description-label');
 		let viewCanvas = document.createElement("canvas");
 		viewCanvas.style.width='100%';
-		viewCanvas.style.height='';
+		viewCanvas.style.height='auto';
 		viewCanvas.width=$('#photo')[0].clientWidth;
-		viewCanvas.height=viewCanvas.width/aspectRatio;
+	//	viewCanvas.height=viewCanvas.width/aspectRatio;
 		let context = viewCanvas.getContext('2d');
 
 		DATABASE.loadMap(route.key).then((map) =>{
 			var img = new Image();
 			img.onload = function(){
+				let aspectRatio = img.width/img.height;
+				viewCanvas.height=viewCanvas.width/aspectRatio;
+
 				context.clearRect(0,0,viewCanvas.width,viewCanvas.height);
 				context.drawImage(img,0,0,viewCanvas.width,viewCanvas.height);
 			};
@@ -91,7 +93,7 @@ let NAV = {
 		picture.css({
 			'background-image': 'url('+picPath+')',
 			'width': '100vw',
-			'height': '100%',
+			'height': '100vw',
 			'background-size': '100vw auto',
 			'background-repeat': 'no-repeat'
 		});
