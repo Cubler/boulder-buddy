@@ -46,9 +46,9 @@ $(document).ready(() => {
 			LOADER.walls = walls;
 		})
 		// Uncomment this line to bypass facebook login
-		// LOGIN.bypass();
+		LOGIN.bypass();
 
 		// Verify using facebook login
-		LOGIN.verify();
+		//LOGIN.verify();
 	});
 });
